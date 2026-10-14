@@ -2,7 +2,7 @@
 
 Odhad, koľko poistného chýba slovenskému priebežnému dôchodkovému systému (1. pilier) preto, že časť ľudí v produktívnom veku žije a pracuje v iných krajinách Európy.
 
-**Metodika s interaktívnym grafom:** [`docs/index.html`](docs/index.html) (po zapnutí GitHub Pages aj ako verejná stránka)
+**[Metodika s interaktívnym grafom](https://chatpall.github.io/sk-pension-emigration/)** (zdrojový súbor: [`docs/index.html`](docs/index.html))
 
 ## Hlavné výsledky (dáta k 14. 10. 2026)
 
