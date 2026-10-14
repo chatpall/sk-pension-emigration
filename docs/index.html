@@ -1,4 +1,5 @@
 <!doctype html>
+<!-- Vygenerované skriptom src/sk_dochodky_emigracia.py zo šablóny docs/sablona.html. Neupravuj ručne. -->
 <html lang="sk">
 <head>
 <meta charset="utf-8">
@@ -84,7 +85,7 @@ footer{font-size:.85rem;color:var(--muted)}
     <div class="kpi"><b>~600 mil. €</b><span>ušlé poistné ročne pri sadzbe 18 %</span></div>
     <div class="kpi"><b>6,3 %</b><span>výdavkov na starobné dôchodky (2024)</span></div>
   </div>
-  <p>Rozsah všetkých scenárov a sadzieb je 290 mil. až 1,08 mld. € ročne, teda 3 až 11 % výdavkov na starobné dôchodky. Ak počítame len krajiny so spoľahlivými dátami a najopatrnejší scenár, dostaneme tvrdú spodnú hranicu 75 mil. € (0,8 %).</p>
+  <p>Rozsah všetkých scenárov a sadzieb je 290 mil. € až 1,08 mld. € ročne, teda 3 až 11 % výdavkov na starobné dôchodky. Ak počítame len krajiny so spoľahlivými dátami a najopatrnejší scenár, dostaneme tvrdú spodnú hranicu 75 mil. € (0,8 %).</p>
 </section>
 
 <section>
@@ -108,7 +109,7 @@ footer{font-size:.85rem;color:var(--muted)}
     <li><strong>narodení na Slovensku</strong> (dataset <code>migr_pop3ctb</code>) – preferovaná definícia,</li>
     <li><strong>slovenskí občania</strong> (dataset <code>migr_pop1ctz</code>) – náhrada, keď krajina nehlási krajinu narodenia, keď sú tie dáta o viac ako 2 roky staršie alebo keď majú chybné vekové členenie.</li>
   </ul>
-  <p>Výnimkou je Česko. Tam sa používa definícia občanov, lebo „narodení v SR“ zahŕňa aj ľudí, ktorí sa presťahovali ešte v Československu. Spojené kráľovstvo už Eurostat nehlási, preto ho dopĺňame ručne zo sčítania 2021/22: 79 193 osôb narodených v SR × predpoklad, že 75 % z nich má 20–64 rokov.</p>
+  <p>Výnimkou je Česko. Tam sa používa definícia občanov, lebo „narodení v SR“ zahŕňa aj ľudí, ktorí sa presťahovali ešte v Československu. Spojené kráľovstvo Eurostat nehlási, preto ho dopĺňame ručne: Census 2021/22 (ONS, NRS, NISRA): 79 193 všetky veky × predpoklad 0,75 pre 20–64.</p>
 
   <h3>Krok B – Slovenské referenčné dáta</h3>
   <p>Pre každý rok od 2010 sťahujeme populáciu SR vo veku 20–64, mieru zamestnanosti občanov SR, priemernú ročnú mzdu na plný úväzok a výdavky na dôchodky.</p>
@@ -132,7 +133,7 @@ s       sadzba poistného</div>
   <div class="tbl"><table>
     <thead><tr><th>Scenár</th><th class="n">α (zamestnanosť)</th><th class="n">β (mzda)</th><th>Význam</th></tr></thead>
     <tbody>
-      <tr><td>Horný</td><td class="n">1,00</td><td class="n">1,00</td><td>všetci by pracovali ako priemerný občan SR za priemernú mzdu</td></tr>
+            <tr><td>Horný</td><td class="n">1,00</td><td class="n">1,00</td><td>všetci by pracovali ako priemerný občan SR za priemernú mzdu</td></tr>
       <tr><td>Realistický</td><td class="n">0,83</td><td class="n">0,85</td><td>časť by doma prácu nenašla, mladší profil znamená nižšiu mzdu</td></tr>
       <tr><td>Dolný</td><td class="n">0,58</td><td class="n">0,75</td><td>veľká časť odišla z nezamestnanosti alebo z nízkopríjmových regiónov</td></tr>
     </tbody>
@@ -150,7 +151,7 @@ s       sadzba poistného</div>
 </section>
 
 <section>
-  <h2>3. Hodnotenie spoľahlivosti dát z krajín</h2>
+  <h2>3. Hodnotenie spoľahlivosti krajín</h2>
   <p>Každá krajina dostane jedno z troch hodnotení podľa pevných pravidiel:</p>
   <ul>
     <li><span class="pill ok">spoľahlivé</span> dáta z roku 2023 alebo novšie, bez príznakov odhadu, obe definície sa líšia najviac 1,6-násobne,</li>
@@ -160,12 +161,12 @@ s       sadzba poistného</div>
   <div class="tbl"><table>
     <thead><tr><th>Hodnotenie</th><th class="n">Krajín</th><th class="n">Osoby 20–64</th><th>Krajiny</th></tr></thead>
     <tbody>
-      <tr><td><span class="pill ok">spoľahlivé</span></td><td class="n">14</td><td class="n">85 432</td><td>AT, HU, IT, NL, IE, NO, SE, LU, IS, SI, FI, BG, EE, LV</td></tr>
-      <tr><td><span class="pill mid">orientačné</span></td><td class="n">10</td><td class="n">222 869</td><td>CZ, UK, DE, CH, BE, DK, PT, RO, LI, LT</td></tr>
-      <tr><td><span class="pill no">chýba</span></td><td class="n">7</td><td class="n">–</td><td>PL, FR, ES, HR, EL, CY, MT</td></tr>
+            <tr><td><span class="pill ok">spoľahlivé</span></td><td class="n">13</td><td class="n">78 092</td><td>AT, HU, IT, NL, NO, SE, LU, IS, SI, FI, BG, EE, LV</td></tr>
+      <tr><td><span class="pill mid">orientačné</span></td><td class="n">11</td><td class="n">230 209</td><td>CZ, UK, DE, CH, IE, BE, DK, PT, RO, LI, LT</td></tr>
+      <tr><td><span class="pill no">chýba</span></td><td class="n">7</td><td class="n">–</td><td>CY, EL, ES, FR, HR, MT, PL</td></tr>
     </tbody>
   </table></div>
-  <p>Výsledok najviac ovplyvňujú tri orientačné krajiny: Česko (93 tis.), UK (59 tis.) a Nemecko (42 tis.). Pri Česku nejde o zlú kvalitu dát, ale o voľbu definície. Nemecký register cudzincov je kvalitný, chýba len krížová kontrola cez krajinu narodenia.</p>
+  <p>Najväčšie krajiny s orientačnými dátami sú Česko (93 tis.; nesúlad definícií (pomer 0,62)); Spojené kráľovstvo (59 tis.; ručný odhad mimo Eurostatu; starý rok (2021)); Nemecko (42 tis.; len jedna definícia, nedá sa krížovo overiť). Spolu tvoria 63 % odhadovanej diaspóry, takže neistota v nich ovplyvňuje výsledok najviac.</p>
   <details class="explain" id="logika-spolahlivosti">
     <summary>Podrobné vysvetlenie logiky spoľahlivosti</summary>
     <div class="body">
@@ -174,11 +175,12 @@ s       sadzba poistného</div>
       <h3>Krok 1: Výber definície</h3>
       <p>Pre každú krajinu sú k dispozícii až dve čísla: narodení na Slovensku a slovenskí občania. Skript prednostne berie narodených v SR, lebo zachytí aj ľudí, ktorí prijali miestne občianstvo. Občanov použije v týchto prípadoch:</p>
       <ul>
-        <li>krajina krajinu narodenia nehlási (Nemecko, Portugalsko),</li>
-        <li>dáta o narodení sú o viac ako 2 roky staršie ako dáta o občianstve (Írsko: 2011 oproti 2025),</li>
-        <li>vekové členenie je podozrivé, teda 3 a viac vekových skupín má nulu pri súčte nad 500 osôb (Belgicko),</li>
+        <li>krajina krajinu narodenia nehlási,</li>
+        <li>dáta o narodení sú o viac ako 2 roky staršie ako dáta o občianstve,</li>
+        <li>vekové členenie je podozrivé, teda 3 a viac vekových skupín má nulu pri súčte nad 500 osôb,</li>
         <li>ide o Česko, kde „narodení v SR“ zahŕňa aj presuny z čias Československa (dá sa prepnúť parametrom).</li>
       </ul>
+      <p>V tomto behu sa definícia občanov použila pre: Česko, Nemecko, Írsko, Belgicko a Portugalsko.</p>
 
       <h3>Krok 2: Hodnotenie</h3>
       <p>Krajina je spoľahlivá, len ak platia všetky tieto podmienky. Ak ktorákoľvek neplatí, je orientačná:</p>
@@ -195,12 +197,12 @@ s       sadzba poistného</div>
       </table></div>
       <p>Krajina má hodnotenie <span class="pill no">chýba</span>, ak Eurostat nemá ani jednu definíciu v potrebnom členení podľa veku. Malé počty pod 500 osôb dostanú len poznámku, že ich vplyv je zanedbateľný. Hodnotenie im to nezhorší, lebo aj malé číslo z registra môže byť presné.</p>
 
-      <h3>Príklady</h3>
+      <h3>Príklady z tohto behu (štyri najväčšie krajiny)</h3>
       <ul>
-        <li><strong>Rakúsko:</strong> dáta z roku 2025, bez príznakov, narodených 38 945 a občanov 36 239 (pomer 1,07). Výsledok: <span class="pill ok">spoľahlivé</span></li>
-        <li><strong>Česko:</strong> dáta z roku 2025, ale pomer definícií 0,62 (93 tisíc oproti 150 tisícom). Výsledok: <span class="pill mid">orientačné</span>. Dôvod nie je zlá kvalita dát, ale to, že definície merajú rôzne skupiny ľudí.</li>
-        <li><strong>Švajčiarsko:</strong> definície sa zhodujú, ale posledné dáta sú z roku 2021. Výsledok: <span class="pill mid">orientačné</span></li>
-        <li><strong>Nemecko:</strong> aktuálne dáta, ale len o občanoch. Výsledok: <span class="pill mid">orientačné</span>, hoci nemecký register cudzincov je kvalitný.</li>
+        <li><strong>Česko:</strong> rok 2025, slovenskí občania: 93 303; druhá definícia 150 058 (pomer 0,62). Výsledok: <span class="pill mid">orientačné</span> – nesúlad definícií (pomer 0,62)</li>
+        <li><strong>Spojené kráľovstvo:</strong> rok 2021, narodení v SR: 59 395. Výsledok: <span class="pill mid">orientačné</span> – ručný odhad mimo Eurostatu; starý rok (2021)</li>
+        <li><strong>Nemecko:</strong> rok 2025, slovenskí občania: 42 406. Výsledok: <span class="pill mid">orientačné</span> – len jedna definícia, nedá sa krížovo overiť</li>
+        <li><strong>Rakúsko:</strong> rok 2025, narodení v SR: 38 945; druhá definícia 36 239 (pomer 1,07). Výsledok: <span class="pill ok">spoľahlivé</span></li>
       </ul>
 
       <h3>Čo toto hodnotenie nemeria</h3>
@@ -223,16 +225,16 @@ s       sadzba poistného</div>
       <span><i style="height:10px;background:var(--blue-band);border-top:2px dashed var(--blue)"></i>Pásmo dvojitého započítania</span>
       <span><i style="border-top:2px dotted var(--orange)"></i>Ušlé poistné ako % výdavkov na starobné dôchodky</span>
     </div>
-    <div class="cw"><canvas id="ts" role="img" aria-label="Čiarový graf 2010 až 2024. Pomer emigrantov k domácim pracujúcim rastie z 3,1 na 5,5 percenta, horná hranica pásma z 3,2 na 5,9 percenta. Ušlé poistné ako podiel výdavkov rastie z 2,9 na 4,6 percenta.">Pomer k pracujúcim 3,1 až 5,5 %; podiel výdavkov 2,9 až 4,6 %.</canvas></div>
+    <div class="cw"><canvas id="ts" role="img" aria-label="Čiarový graf 2010 až 2024. Pomer emigrantov k domácim pracujúcim 3,1 % až 5,5 %, horná hranica pásma 3,2 % až 5,9 %. Ušlé poistné ako podiel výdavkov 2,9 % až 4,6 %.">Čiarový graf 2010 až 2024. Pomer emigrantov k domácim pracujúcim 3,1 % až 5,5 %, horná hranica pásma 3,2 % až 5,9 %. Ušlé poistné ako podiel výdavkov 2,9 % až 4,6 %.</canvas></div>
   </div>
 
   <h3>Ako čítať graf</h3>
   <div class="read">
-    <span class="k">01</span><p><strong>Plná modrá čiara</strong> ukazuje, koľko percent domácich pracujúcich by tvorili emigranti, keby pracovali na Slovensku. Rast z 3,1 % na 5,5 % znamená, že systém každý rok stráca väčšiu časť potenciálnych platiteľov.</p>
-    <span class="k">02</span><p><strong>Modré pásmo</strong> zobrazuje neistotu z dvojitého započítania. Veľa emigrantov sa neodhlási z trvalého pobytu, a tak sú v slovenskej populácii aj v diaspóre. Spodný okraj predpokladá, že nikto nie je započítaný dvakrát. Horný okraj (prerušovaná čiara) predpokladá, že všetci emigranti stále figurujú v populácii SR. Skutočnosť je niekde v pásme. Šírka pásma je najviac 0,4 percentuálneho bodu, takže trend sa nemení.</p>
-    <span class="k">03</span><p><strong>Oranžová bodkovaná čiara</strong> ukazuje ušlé poistné ako podiel skutočných výdavkov na starobné dôchodky. Dvojité započítanie sa jej netýka, lebo výdavky sú reálne vyplatené peniaze. Od roku 2017 sa drží okolo 4,5 %.</p>
-    <span class="k">04</span><p><strong>Výkyv 2022 → 2023</strong> nie je chyba dát. Mzdy reagovali na infláciu okamžite (poistné +13 % ročne), dôchodky sa valorizujú podľa minulej inflácie. V roku 2022 výdavky rástli len o 3,6 % a v roku 2023 o 20,7 %, a podiel sa preto najprv zvýšil a potom klesol.</p>
-    <span class="k">05</span><p><strong>Roky 2010–2012</strong> obsahujú doplnené hodnoty za 2 až 7 krajín a sú menej presné. <strong>Pokles v roku 2021</strong> je pravdepodobne revízia dát po sčítaniach, najmä v Česku.</p>
+    <span class="k">01</span><p><strong>Plná modrá čiara</strong> ukazuje, koľko percent domácich pracujúcich by tvorili emigranti, keby pracovali na Slovensku. Medzi rokmi 2010 a 2024 sa zmenila z 3,1 % na 5,5 %. Systém teda stráca čoraz väčšiu časť potenciálnych platiteľov.</p>
+    <span class="k">02</span><p><strong>Modré pásmo</strong> zobrazuje neistotu z dvojitého započítania. Veľa emigrantov sa neodhlási z trvalého pobytu, a tak sú v slovenskej populácii aj v diaspóre. Spodný okraj predpokladá, že nikto nie je započítaný dvakrát. Horný okraj (prerušovaná čiara) predpokladá, že všetci emigranti z panelu stále figurujú v populácii SR. Skutočnosť je niekde v pásme. Šírka pásma je najviac 0,4 percentuálneho bodu (rok 2024).</p>
+    <span class="k">03</span><p><strong>Oranžová bodkovaná čiara</strong> ukazuje ušlé poistné ako podiel skutočných výdavkov na starobné dôchodky. Dvojité započítanie sa jej netýka, lebo výdavky sú reálne vyplatené peniaze. V roku 2024 je 4,6 %, priemer posledných 5 rokov je 4,6 %.</p>
+    <span class="k">04</span><p><strong>Najväčšia ročná zmena</strong> oranžovej čiary je medzi rokmi 2015 a 2016 (3,7 % → 4,1 %). Ušlé poistné sa zmenilo o 13,0 %, výdavky na starobné dôchodky o 1,6 %. Zmenu teda spôsobil rozdielny rast oboch veličín, nie zmena počtu emigrantov ani chyba dát. Ušlé poistné rastie spolu s mzdami, výdavky s valorizáciou dôchodkov, ktorá sa riadi infláciou z minulého obdobia. Keď sa tieto dva rasty rozídu, podiel sa pohne.</p>
+    <span class="k">05</span><p><strong>Doplnené hodnoty</strong> (rok a počet krajín): 2010 (4), 2011 (7), 2012 (2), 2022 (1), 2023 (2), 2024 (2). Tieto roky sú menej presné. <strong>Pokles v roku 2021</strong> (−7,5 %) môže byť revízia dát hostiteľských krajín, napríklad po sčítaní obyvateľov.</p>
   </div>
 </section>
 
@@ -254,14 +256,14 @@ s       sadzba poistného</div>
       <tr><td>Koordinácia dôchodkov v EÚ</td><td>Nariadenie (ES) č. 883/2004</td><td><a href="https://eur-lex.europa.eu/legal-content/SK/ALL/?uri=CELEX:32004R0883" target="_blank" rel="noopener">EUR-Lex</a></td></tr>
     </tbody>
   </table></div>
-  <p>Všetky dáta Eurostatu sa sťahujú skriptom <code>src/sk_dochodky_emigracia.py</code> cez verejné JSON API <code>ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/</code>. Sadzby poistného sú overené len z prehľadového webu a pred publikovaním výsledkov ich treba skontrolovať priamo v zákone alebo na stránke Sociálnej poisťovne.</p>
+  <p>Všetky dáta Eurostatu sa sťahujú skriptom <code>src/sk_dochodky_emigracia.py</code> cez verejné JSON API <code>ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/</code>. Presný postup prístupu k dátam, pôvodné zdroje a právny základ každej databázy sú v dokumente <a href="https://github.com/chatpall/sk-pension-emigration/blob/main/docs/zdroje_dat.md" target="_blank" rel="noopener">Zdroje dát a prístup k nim</a>. Sadzby poistného sú overené len z prehľadového webu a pred publikovaním výsledkov ich treba skontrolovať priamo v zákone alebo na stránke Sociálnej poisťovne.</p>
 </section>
 
 <section>
   <h2>6. Obmedzenia</h2>
   <ul>
     <li><strong>Kontrafaktuál je predpoklad.</strong> Nevieme, koľko emigrantov by doma našlo prácu a za akú mzdu. Preto pracujeme s tromi scenármi a nie s jedným číslom.</li>
-    <li><strong>Pokrytie.</strong> Chýba Poľsko, Francúzsko, Španielsko, Chorvátsko, Grécko, Cyprus, Malta a krajiny mimo Európy (USA, Kanada, Austrália).</li>
+    <li><strong>Pokrytie.</strong> Chýba Cyprus, Grécko, Španielsko, Francúzsko, Chorvátsko, Malta, Poľsko, ako aj krajiny mimo Európy (USA, Kanada, Austrália).</li>
     <li><strong>UK</strong> je ručný odhad zo sčítania 2021/22 a podiel veku 20–64 je predpoklad.</li>
     <li><strong>Pendleri</strong> s trvalým pobytom v SR, ktorí pracujú v Rakúsku alebo Česku, v zrkadlových dátach nie sú, lebo bývajú na Slovensku.</li>
     <li><strong>Dvojité započítanie</strong> v populácii SR je ošetrené len pásmom v grafe, nie korekciou výsledku.</li>
@@ -279,7 +281,7 @@ s       sadzba poistného</div>
   </ul>
 </section>
 
-<footer>Výpočty: skript <code>sk_dochodky_emigracia.py</code> (verzia 2.2), dáta stiahnuté 14. 10. 2026. Odhady sú orientačné a slúžia na rádové zhodnotenie problému.</footer>
+<footer>Výpočty: skript <code>sk_dochodky_emigracia.py</code> (verzia 2.4), stránka vygenerovaná 14. 10. 2026. Odhady sú orientačné a slúžia na rádové zhodnotenie problému.</footer>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
@@ -287,10 +289,10 @@ s       sadzba poistného</div>
 (function(){
   var cs=getComputedStyle(document.documentElement);
   function v(n){return cs.getPropertyValue(n).trim();}
-  var L=['2010','2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021','2022','2023','2024'];
-  var base=[3.08,3.11,3.38,3.64,3.92,4.19,4.49,4.71,4.91,4.88,5.06,4.72,4.95,5.08,5.49];
-  var up=[3.20,3.23,3.52,3.81,4.12,4.42,4.74,4.99,5.22,5.19,5.39,5.01,5.27,5.42,5.88];
-  var exp=[2.90,2.90,3.05,3.21,3.33,3.66,4.07,4.32,4.55,4.61,4.57,4.39,4.80,4.50,4.61];
+  var L=["2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024"];
+  var base=[3.08, 3.11, 3.38, 3.64, 3.92, 4.19, 4.49, 4.71, 4.91, 4.88, 5.06, 4.72, 4.95, 5.08, 5.49];
+  var up=[3.2, 3.23, 3.52, 3.81, 4.12, 4.42, 4.74, 4.99, 5.22, 5.19, 5.39, 5.01, 5.27, 5.42, 5.88];
+  var exp=[2.9, 2.9, 3.05, 3.21, 3.33, 3.66, 4.07, 4.32, 4.55, 4.61, 4.57, 4.39, 4.8, 4.5, 4.61];
   if(!window.Chart)return;
   new Chart(document.getElementById('ts'),{type:'line',data:{labels:L,datasets:[
     {label:'Horná hranica (všetci emigranti započítaní dvakrát)',data:up,borderColor:v('--blue'),borderDash:[5,4],borderWidth:1.5,pointRadius:0,fill:{target:1},backgroundColor:v('--blue-band')},

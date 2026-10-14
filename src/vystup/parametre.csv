@@ -1,0 +1,21 @@
+﻿parameter,hodnota,popis,druh
+ROK_OD,2010,prvý rok sťahovaných dát,nastavenie
+CZ_DEFINICIA,obcania_SR,definícia použitá pre Česko,predpoklad
+HLAVNY_SCENAR,realisticky,scenár pre časový rad,nastavenie
+HLAVNA_SADZBA,18%_starobne,sadzba pre časový rad,nastavenie
+PRAH_AKTUALNOST,2023,najstarší rok pre hodnotenie spoľahlivé,pravidlo
+PRAH_NESULAD,1.6,max. pomer definícií pre hodnotenie spoľahlivé,pravidlo
+PRAH_MALY_POCET,500,hranica malého počtu osôb,pravidlo
+PANEL_MIN_PODIEL_ROKOV,0.7,min. pokrytie rokov pre panel časového radu,pravidlo
+PANEL_DOPLN_ROKY,3,max. počet doplnených okrajových rokov,pravidlo
+SADZBY[14%_I_pilier_sporitel],0.14,sadzba poistného z hrubej mzdy,zákon č. 461/2003 Z. z.
+SADZBY[18%_starobne],0.18,sadzba poistného z hrubej mzdy,zákon č. 461/2003 Z. z.
+SADZBY[22.75%_starobne+RFS],0.2275,sadzba poistného z hrubej mzdy,zákon č. 461/2003 Z. z.
+SCENARE[horny].zamestnanost_rel,1.0,α – podiel slovenskej miery zamestnanosti,predpoklad
+SCENARE[horny].mzda_podiel,1.0,β – podiel na priemernej mzde,predpoklad
+SCENARE[realisticky].zamestnanost_rel,0.83,α – podiel slovenskej miery zamestnanosti,predpoklad
+SCENARE[realisticky].mzda_podiel,0.85,β – podiel na priemernej mzde,predpoklad
+SCENARE[dolny].zamestnanost_rel,0.58,α – podiel slovenskej miery zamestnanosti,predpoklad
+SCENARE[dolny].mzda_podiel,0.75,β – podiel na priemernej mzde,predpoklad
+MZDA_KOEF_KRAJINA[UK],0.85,γ – mzdový koeficient krajiny,predpoklad (ONS APS 2015/16)
+MANUALNE[UK].osoby_20_64,59395,"Census 2021/22 (ONS, NRS, NISRA): 79 193 všetky veky × predpoklad 0,75 pre 20–64",ručný odhad

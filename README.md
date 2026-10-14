@@ -47,6 +47,15 @@ Výsledky sa uložia do priečinka `vystup/`:
 | `sk_referencne_data.csv` | slovenské vstupy podľa rokov |
 | `scenare.csv` | scenáre × sadzby za posledný rok |
 | `casovy_rad.csv` | vývoj riedenia v čase |
+| `slovnik_dat.csv` | popis každého stĺpca: význam, jednotka, či je importovaný alebo vypočítaný, zdroj a vzorec |
+| `parametre.csv` | hodnoty všetkých predpokladov a pravidiel použitých v behu |
+| `index.html` | stránka s metodikou vyplnená číslami z tohto behu |
+
+### Stránka s metodikou
+
+Na konci behu skript vyplní šablónu `docs/sablona.html` aktuálnymi číslami a zapíše `vystup/index.html` aj `docs/index.html` (GitHub Pages). Text a vzhľad stránky sa upravujú v `docs/sablona.html`; `docs/index.html` sa pri každom behu prepíše. Ak nechceš meniť `docs/index.html`, nastav v skripte `AKTUALIZOVAT_DOCS = False`.
+
+CSV súbory sú v kódovaní UTF-8 s BOM, takže Excel správne zobrazí diakritiku.
 
 Predpoklady (scenáre, sadzby, odhad pre UK, definícia pre Česko) sa nastavujú v časti `PARAMETRE` na začiatku skriptu.
 
@@ -64,6 +73,8 @@ Výsledky z behu 14. 10. 2026 sú uložené v [`data/vysledky_2026-10-14/`](data
 | Slováci v UK | sčítanie 2021/22 (ONS, NRS, NISRA); profil práce: ONS Annual Population Survey |
 | Sadzby poistného | zákon č. 461/2003 Z. z., zákon č. 43/2004 Z. z. |
 | Koordinácia dôchodkov v EÚ | nariadenie (ES) č. 883/2004 |
+
+Presný postup prístupu k dátam, pôvodné zdroje, právny základ a príklady dopytov pre každú databázu: [`docs/zdroje_dat.md`](docs/zdroje_dat.md).
 
 Dáta Eurostatu sa sťahujú cez verejné API bez registrácie: `https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/`.
 
@@ -85,6 +96,8 @@ Dáta Eurostatu sa sťahujú cez verejné API bez registrácie: `https://ec.euro
 
 ## História verzií
 
+- **2.4** – stránka s metodikou sa generuje zo šablóny `docs/sablona.html` z výsledkov behu
+- **2.3** – dátový slovník (`slovnik_dat.csv`) a zoznam parametrov (`parametre.csv`), CSV v UTF-8 s BOM
 - **2.2** – krížová kontrola definícií len pri porovnateľnom roku
 - **2.1** – oprava výberu definície (staré alebo chybné dáta), relatívna zamestnanosť v scenároch, doplnenie okrajových rokov v časovom rade
 - **2.0** – kombinácia definícií, UK zo sčítania, mzdový koeficient podľa krajiny, tri sadzby, veková štruktúra, časový rad, hodnotenie spoľahlivosti

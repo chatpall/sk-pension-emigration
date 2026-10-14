@@ -1,0 +1,301 @@
+<!doctype html>
+<!-- ŠABLÓNA: index.html generuje skript src/sk_dochodky_emigracia.py. Upravuj tento súbor, nie index.html. Značky {{...}} dopĺňa skript. -->
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Emigrácia a dôchodky SR</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: jeden stĺpec metodickej správy, formuly a tabuľky ako vložené bloky, graf v strede */
+:root{
+  --bg:#f4f6f7; --surface:#ffffff; --ink:#15212b; --muted:#56636e; --rule:#d5dbe0;
+  --blue:#2a78d6; --blue-band:rgba(42,120,214,.14); --orange:#d9662f; --ochre-bg:#fbf2e3; --ochre-ink:#7a4a10;
+  --f-display:"Newsreader",Georgia,"Times New Roman",serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11171c; --surface:#182129; --ink:#e6ebef; --muted:#9aa7b2; --rule:#2c3843;
+  --blue:#4b93ea; --blue-band:rgba(75,147,234,.2); --orange:#e8834f; --ochre-bg:#2c2416; --ochre-ink:#e9c48a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11171c; --surface:#182129; --ink:#e6ebef; --muted:#9aa7b2; --rule:#2c3843;
+  --blue:#4b93ea; --blue-band:rgba(75,147,234,.2); --orange:#e8834f; --ochre-bg:#2c2416; --ochre-ink:#e9c48a; color-scheme:dark}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 var(--f-body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:2.5rem 4rem}
+main{max-width:46rem;margin:0 auto;display:flex;flex-direction:column;gap:2.75rem}
+section{display:flex;flex-direction:column;gap:.9rem;min-width:0}
+h1,h2,h3{font-family:var(--f-display);font-weight:500;text-wrap:balance;margin:0;line-height:1.2}
+h1{font-size:2.4rem}
+h2{font-size:1.6rem;padding-top:1.25rem;border-top:1px solid var(--rule)}
+h3{font-size:1.15rem;margin-top:.4rem}
+p,ul,ol{margin:0} ul,ol{padding-left:1.3rem;display:flex;flex-direction:column;gap:.35rem}
+.eyebrow{font:500 .75rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lede{font-size:1.1rem;color:var(--muted);max-width:38rem}
+a{color:var(--blue)}
+code,.mono{font-family:var(--f-mono);font-size:.88em}
+.formula{font-family:var(--f-mono);font-size:.92rem;background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:.9rem 1rem;overflow-x:auto;white-space:pre;line-height:1.7}
+.note{background:var(--ochre-bg);color:var(--ochre-ink);border-radius:6px;padding:.85rem 1rem;font-size:.95rem}
+.tbl{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.9rem;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:.55rem .75rem;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-weight:500;color:var(--muted);font-size:.8rem;letter-spacing:.03em}
+tr:last-child td{border-bottom:0}
+td.n,th.n{text-align:right;white-space:nowrap}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(10rem,1fr));gap:12px}
+.kpi{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:.9rem 1rem;display:flex;flex-direction:column;gap:.2rem}
+.kpi b{font:500 1.7rem/1.1 var(--f-display);font-variant-numeric:tabular-nums lining-nums}
+.kpi span{font-size:.82rem;color:var(--muted)}
+.chartbox{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:1rem}
+.legend{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;font-size:.82rem;color:var(--muted);margin-bottom:.6rem}
+.legend i{display:inline-block;width:20px;vertical-align:middle;margin-right:6px}
+.cw{position:relative;height:340px}
+.pill{display:inline-block;font:500 .72rem/1 var(--f-mono);padding:.3rem .5rem;border-radius:4px;white-space:nowrap}
+.ok{background:rgba(12,163,12,.12);color:#2f7a2f} .mid{background:var(--ochre-bg);color:var(--ochre-ink)} .no{background:rgba(208,59,59,.12);color:#b03a3a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ok{color:#7fd17f} :root:not([data-theme="light"]) .no{color:#f08a8a}}
+:root[data-theme="dark"] .ok{color:#7fd17f} :root[data-theme="dark"] .no{color:#f08a8a}
+.read{display:grid;grid-template-columns:2.2rem minmax(0,1fr);gap:.6rem 0.8rem;align-items:start}
+.read .k{font:500 .8rem/1.6 var(--f-mono);color:var(--muted)}
+details.explain{background:var(--surface);border:1px solid var(--rule);border-radius:6px}
+details.explain>summary{cursor:pointer;list-style:none;padding:.8rem 1rem;font-weight:500;display:flex;justify-content:space-between;gap:1rem;align-items:center}
+details.explain>summary::-webkit-details-marker{display:none}
+details.explain>summary::after{content:"+";font:500 1.1rem/1 var(--f-mono);color:var(--muted)}
+details.explain[open]>summary::after{content:"\2212"}
+details.explain>summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:6px}
+details.explain .body{padding:0 1rem 1.1rem;display:flex;flex-direction:column;gap:.9rem;border-top:1px solid var(--rule);padding-top:1rem}
+details.explain .tbl{background:var(--bg)}
+footer{font-size:.85rem;color:var(--muted)}
+@media (max-width:480px){h1{font-size:1.9rem}}
+</style>
+</head>
+<body>
+
+<main>
+<header style="display:flex;flex-direction:column;gap:.8rem">
+  <p class="eyebrow">Metodika · Modul 1 · stav k {{DATUM}}</p>
+  <h1>Emigrácia a udržateľnosť dôchodkového systému SR</h1>
+  <p class="lede">Ako sme odhadli, koľko poistného chýba priebežnému dôchodkovému systému preto, že časť Slovákov v produktívnom veku žije a pracuje v iných krajinách Európy. Dokument popisuje postup, zdroje dát, predpoklady, výsledky a spôsob čítania grafu.</p>
+</header>
+
+<section>
+  <h2>Hlavné výsledky</h2>
+  <div class="kpis">
+    <div class="kpi"><b>{{KPI_EMIGRANTI}}</b><span>Slováci 20–64 rokov v EÚ/EFTA a UK</span></div>
+    <div class="kpi"><b>{{KPI_PCT_DOM}}</b><span>chýbajúci pracujúci voči domácim ({{SCENAR_TXT}} scenár)</span></div>
+    <div class="kpi"><b>{{KPI_ODVODY}}</b><span>ušlé poistné ročne pri sadzbe {{SADZBA_TXT}}</span></div>
+    <div class="kpi"><b>{{KPI_PCT_VYD}}</b><span>výdavkov na starobné dôchodky ({{ROK_VYD}})</span></div>
+  </div>
+  <p>{{ROZSAH_TXT}}</p>
+</section>
+
+<section>
+  <h2>1. Otázka a rámec</h2>
+  <p>Slovenský 1. pilier funguje priebežne: poistné dnešných pracujúcich sa hneď vypláca dnešným dôchodcom. Dnešní dôchodcovia si väčšinou nesporili v 2. pilieri, takže ich dôchodky takmer celé závisia od poistného ekonomicky aktívnych ľudí.</p>
+  <p>Systém zaťažujú tri samostatné mechanizmy. Tento modul meria iba druhý z nich:</p>
+  <ol>
+    <li><strong>Demografický tlak</strong> – menej detí a dlhší život znamenajú viac dôchodcov na jedného pracujúceho.</li>
+    <li><strong>Emigrácia</strong> – časť ľudí v produktívnom veku platí poistné v inej krajine.</li>
+    <li><strong>Prechodné bremeno reformy</strong> – časť poistného dnešných pracujúcich ide do 2. piliera a v priebežnom systéme chýba.</li>
+  </ol>
+  <div class="note">Emigranti v EÚ si podľa nariadenia (ES) č. 883/2004 budujú dôchodkový nárok tam, kde pracujú. Slovensko im neskôr vyplatí len pomernú časť dôchodku. Pre dnešných dôchodcov je emigrácia čistá strata príjmov. Pre dlhodobú bilanciu je to čiastočne len posun v čase, lebo časť budúcich výdavkov odpadne.</div>
+</section>
+
+<section>
+  <h2>2. Postup výpočtu</h2>
+
+  <h3>Krok A – Koľko ich je</h3>
+  <p>Slovenská štatistika emigráciu podhodnocuje, lebo ľudia sa pri odchode často neodhlásia. Preto používame <strong>zrkadlové štatistiky</strong>: počty, ktoré o Slovákoch vo svojej populácii hlásia hostiteľské krajiny Eurostatu. Sledujeme vek 20–64 rokov v deviatich päťročných skupinách a dve definície:</p>
+  <ul>
+    <li><strong>narodení na Slovensku</strong> (dataset <code>migr_pop3ctb</code>) – preferovaná definícia,</li>
+    <li><strong>slovenskí občania</strong> (dataset <code>migr_pop1ctz</code>) – náhrada, keď krajina nehlási krajinu narodenia, keď sú tie dáta o viac ako 2 roky staršie alebo keď majú chybné vekové členenie.</li>
+  </ul>
+  <p>{{KROK_A_VYNIMKY}}</p>
+
+  <h3>Krok B – Slovenské referenčné dáta</h3>
+  <p>Pre každý rok od {{ROK_OD}} sťahujeme populáciu SR vo veku 20–64, mieru zamestnanosti občanov SR, priemernú ročnú mzdu na plný úväzok a výdavky na dôchodky.</p>
+
+  <h3>Krok C – Kontrafaktuál</h3>
+  <p>Otázka znie: koľko poistného by títo ľudia odviedli, keby pracovali na Slovensku? Pre každú krajinu <span class="mono">k</span> a rok <span class="mono">t</span>:</p>
+  <div class="formula">ušlé_poistné = Σₖ  N(k,t) × z(t) × α × w(t) × β × γₖ × s
+
+N(k,t)  počet Slovákov 20–64 v krajine k
+z(t)    miera zamestnanosti občanov SR v roku t
+α       podiel tejto miery, ktorý by emigranti doma dosiahli (scenár)
+w(t)    priemerná ročná mzda v SR
+β       podiel na priemernej mzde (scenár)
+γₖ      mzdový koeficient krajiny ({{GAMMA_TXT}})
+s       sadzba poistného</div>
+  <p>Výsledok porovnávame s dvoma menovateľmi:</p>
+  <div class="formula">% domácich pracujúcich  = Σ N × z × α / (populácia_SR × z)
+% výdavkov na dôchodky  = ušlé_poistné / výdavky na starobné dôchodky</div>
+
+  <h3>Scenáre</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Scenár</th><th class="n">α (zamestnanosť)</th><th class="n">β (mzda)</th><th>Význam</th></tr></thead>
+    <tbody>
+      {{SCENARE_RIADKY}}
+    </tbody>
+  </table></div>
+
+  <h3>Sadzby poistného (zákon č. 461/2003 Z. z.)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Variant</th><th class="n">Sadzba</th><th>Čo zahŕňa</th></tr></thead>
+    <tbody>
+      <tr><td>I. pilier pri sporiteľovi</td><td class="n">14 %</td><td>to, čo ostane v priebežnom systéme, ak človek sporí v 2. pilieri</td></tr>
+      <tr><td>Starobné poistenie</td><td class="n">18 %</td><td>4 % zamestnanec + 14 % zamestnávateľ; hlavný variant</td></tr>
+      <tr><td>Starobné + rezervný fond solidarity</td><td class="n">22,75 %</td><td>pridáva 4,75 % zamestnávateľa, ktorými sa kryjú deficity fondov</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>3. Hodnotenie spoľahlivosti krajín</h2>
+  <p>Každá krajina dostane jedno z troch hodnotení podľa pevných pravidiel:</p>
+  <ul>
+    <li><span class="pill ok">spoľahlivé</span> dáta z roku {{PRAH_ROK}} alebo novšie, bez príznakov odhadu, obe definície sa líšia najviac {{PRAH_NESULAD}}-násobne,</li>
+    <li><span class="pill mid">orientačné</span> starší rok, príznak Eurostatu (e = odhad, u = nízka spoľahlivosť), väčší nesúlad definícií, len jedna definícia alebo ručný odhad,</li>
+    <li><span class="pill no">chýba</span> Eurostat nemá dáta v potrebnom vekovom členení.</li>
+  </ul>
+  <div class="tbl"><table>
+    <thead><tr><th>Hodnotenie</th><th class="n">Krajín</th><th class="n">Osoby 20–64</th><th>Krajiny</th></tr></thead>
+    <tbody>
+      {{SPOLAHLIVOST_RIADKY}}
+    </tbody>
+  </table></div>
+  <p>{{NAJVACSIE_ORIENTACNE}}</p>
+  <details class="explain" id="logika-spolahlivosti">
+    <summary>Podrobné vysvetlenie logiky spoľahlivosti</summary>
+    <div class="body">
+      <p>Logika má dva kroky. Najprv skript pre každú krajinu vyberie, ktorú definíciu použije, potom ohodnotí, nakoľko sa dá zvolenému číslu veriť.</p>
+
+      <h3>Krok 1: Výber definície</h3>
+      <p>Pre každú krajinu sú k dispozícii až dve čísla: narodení na Slovensku a slovenskí občania. Skript prednostne berie narodených v SR, lebo zachytí aj ľudí, ktorí prijali miestne občianstvo. Občanov použije v týchto prípadoch:</p>
+      <ul>
+        <li>krajina krajinu narodenia nehlási,</li>
+        <li>dáta o narodení sú o viac ako 2 roky staršie ako dáta o občianstve,</li>
+        <li>vekové členenie je podozrivé, teda 3 a viac vekových skupín má nulu pri súčte nad {{PRAH_MALY}} osôb,</li>
+        <li>ide o Česko, kde „narodení v SR“ zahŕňa aj presuny z čias Československa (dá sa prepnúť parametrom).</li>
+      </ul>
+      <p>{{OBCANIA_V_BEHU}}</p>
+
+      <h3>Krok 2: Hodnotenie</h3>
+      <p>Krajina je spoľahlivá, len ak platia všetky tieto podmienky. Ak ktorákoľvek neplatí, je orientačná:</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Podmienka</th><th>Prečo</th></tr></thead>
+        <tbody>
+          <tr><td>Dáta sú z roku {{PRAH_ROK}} alebo novšie</td><td>Migrácia sa mení rýchlo, 3 roky staré číslo už nemusí sedieť.</td></tr>
+          <tr><td>Eurostat pri čísle neuvádza príznak <code>e</code> (odhad) ani <code>u</code> (nízka spoľahlivosť)</td><td>Krajina sama priznáva, že číslo nie je presné.</td></tr>
+          <tr><td>Obe definície sa líšia najviac {{PRAH_NESULAD}}-násobne</td><td>Ak sa dve nezávislé čísla zhodujú, je to krížová kontrola. Veľký rozdiel znamená, že jedno z nich je problematické alebo že definície merajú niečo iné.</td></tr>
+          <tr><td>Existujú obe definície z porovnateľného roku (najviac 2 roky od seba)</td><td>Bez druhého čísla sa nedá nič krížovo overiť.</td></tr>
+          <tr><td>Nie je to ručný odhad</td><td>UK je odhad, nie údaj zo štatistiky.</td></tr>
+          <tr><td>Vekové členenie nie je podozrivé</td><td>Nuly v celých vekových skupinách signalizujú chybu v dátach.</td></tr>
+        </tbody>
+      </table></div>
+      <p>Krajina má hodnotenie <span class="pill no">chýba</span>, ak Eurostat nemá ani jednu definíciu v potrebnom členení podľa veku. Malé počty pod {{PRAH_MALY}} osôb dostanú len poznámku, že ich vplyv je zanedbateľný. Hodnotenie im to nezhorší, lebo aj malé číslo z registra môže byť presné.</p>
+
+      <h3>Príklady z tohto behu (štyri najväčšie krajiny)</h3>
+      <ul>
+{{PRIKLADY}}
+      </ul>
+
+      <h3>Čo toto hodnotenie nemeria</h3>
+      <ul>
+        <li><strong>„Spoľahlivé“ neznamená „presné“.</strong> Znamená to len, že číslo prešlo kontrolami, ktoré vieme urobiť automaticky.</li>
+        <li><strong>Kvalitu registra v hostiteľskej krajine.</strong> Ak sa Slováci v niektorej krajine nehlásia na pobyt (napríklad sezónni pracovníci), chýbajú v oboch definíciách naraz. Krížová kontrola to neodhalí, lebo obe čísla budú rovnako nízke.</li>
+        <li><strong>Prahy sú zvolené úsudkom, nie odvodené.</strong> Hranice {{PRAH_ROK}}, {{PRAH_NESULAD}} a {{PRAH_MALY}} sú rozumné, ale arbitrárne. Dajú sa zmeniť v časti <code>PARAMETRE</code> skriptu (<code>PRAH_AKTUALNOST</code>, <code>PRAH_NESULAD</code>, <code>PRAH_MALY_POCET</code>).</li>
+      </ul>
+      <p>Preto skript počíta výsledky dvakrát: pre všetky krajiny a len pre spoľahlivé. Ten druhý výsledok je tvrdá spodná hranica, ktorú sa dá obhájiť aj pred kritickým čitateľom.</p>
+    </div>
+  </details>
+</section>
+
+<section>
+  <h2>4. Vývoj v čase</h2>
+  <p>Časový rad počíta len s krajinami, ktoré majú dáta aspoň v {{PANEL_PCT}} rokov ({{PANEL_N}} krajín, bez UK). Chýbajúci okrajový rok sa doplní najbližšou známou hodnotou, najviac na {{PANEL_DOPLN}} roky. Úrovne sú preto nižšie ako v hlavných výsledkoch a dôležitý je trend.</p>
+  <div class="chartbox">
+    <div class="legend">
+      <span><i style="border-top:2px solid var(--blue)"></i>Emigranti ako % domácich pracujúcich</span>
+      <span><i style="height:10px;background:var(--blue-band);border-top:2px dashed var(--blue)"></i>Pásmo dvojitého započítania</span>
+      <span><i style="border-top:2px dotted var(--orange)"></i>Ušlé poistné ako % výdavkov na starobné dôchodky</span>
+    </div>
+    <div class="cw"><canvas id="ts" role="img" aria-label="{{ARIA}}">{{ARIA}}</canvas></div>
+  </div>
+
+  <h3>Ako čítať graf</h3>
+  <div class="read">
+    <span class="k">01</span><p>{{CITANIE_01}}</p>
+    <span class="k">02</span><p>{{CITANIE_02}}</p>
+    <span class="k">03</span><p>{{CITANIE_03}}</p>
+    <span class="k">04</span><p>{{CITANIE_04}}</p>
+    <span class="k">05</span><p>{{CITANIE_05}}</p>
+  </div>
+</section>
+
+<section>
+  <h2>5. Zdroje dát</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Údaj</th><th>Zdroj</th><th>Kód / odkaz</th></tr></thead>
+    <tbody>
+      <tr><td>Populácia podľa krajiny narodenia</td><td>Eurostat</td><td><a href="https://ec.europa.eu/eurostat/databrowser/view/migr_pop3ctb/default/table" target="_blank" rel="noopener"><code>migr_pop3ctb</code></a></td></tr>
+      <tr><td>Populácia podľa občianstva</td><td>Eurostat</td><td><a href="https://ec.europa.eu/eurostat/databrowser/view/migr_pop1ctz/default/table" target="_blank" rel="noopener"><code>migr_pop1ctz</code></a></td></tr>
+      <tr><td>Populácia SR k 1. 1. podľa veku</td><td>Eurostat</td><td><a href="https://ec.europa.eu/eurostat/databrowser/view/demo_pjan/default/table" target="_blank" rel="noopener"><code>demo_pjan</code></a></td></tr>
+      <tr><td>Miera zamestnanosti 20–64 podľa občianstva</td><td>Eurostat (VZPS/LFS)</td><td><a href="https://ec.europa.eu/eurostat/databrowser/view/lfsa_ergan/default/table" target="_blank" rel="noopener"><code>lfsa_ergan</code></a></td></tr>
+      <tr><td>Priemerná ročná mzda na plný úväzok</td><td>Eurostat</td><td><a href="https://ec.europa.eu/eurostat/databrowser/view/nama_10_fte/default/table" target="_blank" rel="noopener"><code>nama_10_fte</code></a></td></tr>
+      <tr><td>Výdavky na dôchodky (ESSPROS)</td><td>Eurostat</td><td><a href="https://ec.europa.eu/eurostat/databrowser/view/spr_exp_pens/default/table" target="_blank" rel="noopener"><code>spr_exp_pens</code></a></td></tr>
+      <tr><td>Slováci v UK (sčítanie 2021/22)</td><td>ONS, NRS, NISRA</td><td><a href="https://en.wikipedia.org/wiki/Slovaks_in_the_United_Kingdom" target="_blank" rel="noopener">prehľad s odkazmi</a></td></tr>
+      <tr><td>Profil Slovákov na trhu práce v UK</td><td>ONS, Annual Population Survey (ad hoc 2017)</td><td><a href="https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/employmentandemployeetypes/adhocs/007890slovakiansinemploymentbrokendownbyoccupationqualificationsgenderageandemploymentlength" target="_blank" rel="noopener">ONS 007890</a></td></tr>
+      <tr><td>Sadzby poistného</td><td>Zákon č. 461/2003 Z. z., § 128–137</td><td><a href="https://rulecalc.com/sk/zamestnanec/sadzby-poistneho-sp-sk" target="_blank" rel="noopener">prehľad sadzieb 2026</a></td></tr>
+      <tr><td>Sadzba príspevku do 2. piliera</td><td>Zákon č. 43/2004 Z. z., § 64</td><td><a href="https://rulecalc.com/sk/duchody/ii-pilier-sadzba-prispevkov" target="_blank" rel="noopener">prehľad</a></td></tr>
+      <tr><td>Koordinácia dôchodkov v EÚ</td><td>Nariadenie (ES) č. 883/2004</td><td><a href="https://eur-lex.europa.eu/legal-content/SK/ALL/?uri=CELEX:32004R0883" target="_blank" rel="noopener">EUR-Lex</a></td></tr>
+    </tbody>
+  </table></div>
+  <p>Všetky dáta Eurostatu sa sťahujú skriptom <code>src/sk_dochodky_emigracia.py</code> cez verejné JSON API <code>ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/</code>. Presný postup prístupu k dátam, pôvodné zdroje a právny základ každej databázy sú v dokumente <a href="https://github.com/chatpall/sk-pension-emigration/blob/main/docs/zdroje_dat.md" target="_blank" rel="noopener">Zdroje dát a prístup k nim</a>. Sadzby poistného sú overené len z prehľadového webu a pred publikovaním výsledkov ich treba skontrolovať priamo v zákone alebo na stránke Sociálnej poisťovne.</p>
+</section>
+
+<section>
+  <h2>6. Obmedzenia</h2>
+  <ul>
+    <li><strong>Kontrafaktuál je predpoklad.</strong> Nevieme, koľko emigrantov by doma našlo prácu a za akú mzdu. Preto pracujeme s tromi scenármi a nie s jedným číslom.</li>
+    <li><strong>Pokrytie.</strong> {{CHYBAJUCE_TXT}}</li>
+    <li><strong>UK</strong> je ručný odhad zo sčítania 2021/22 a podiel veku 20–64 je predpoklad.</li>
+    <li><strong>Pendleri</strong> s trvalým pobytom v SR, ktorí pracujú v Rakúsku alebo Česku, v zrkadlových dátach nie sú, lebo bývajú na Slovensku.</li>
+    <li><strong>Dvojité započítanie</strong> v populácii SR je ošetrené len pásmom v grafe, nie korekciou výsledku.</li>
+    <li><strong>Nezohľadnené vplyvy:</strong> remitencie, vyslaní pracovníci (pracujú v zahraničí, ale platia poistné v SR), imigranti do SR a nižšie budúce nároky emigrantov.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>7. Ďalšie kroky</h2>
+  <ul>
+    <li><strong>Modul 2:</strong> demografická projekcia do roku 2060 (Eurostat EUROPOP2023) a rozklad budúceho deficitu na starnutie, pôrodnosť, emigráciu a zamestnanosť.</li>
+    <li><strong>Druhý ukazovateľ</strong> ušlého poistného vo vzťahu k celkovému výberu poistného alebo k HDP, ktorý nevyskakuje pri inflačných šokoch.</li>
+    <li><strong>Overenie</strong> počtu platiteľov poistného z výročných správ Sociálnej poisťovne na kvantifikáciu dvojitého započítania.</li>
+    <li><strong>Pendleri</strong> z výberového zisťovania pracovných síl ŠÚ SR.</li>
+  </ul>
+</section>
+
+<footer>Výpočty: skript <code>sk_dochodky_emigracia.py</code> (verzia {{VERZIA}}), stránka vygenerovaná {{DATUM}}. Odhady sú orientačné a slúžia na rádové zhodnotenie problému.</footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+(function(){
+  var cs=getComputedStyle(document.documentElement);
+  function v(n){return cs.getPropertyValue(n).trim();}
+  var L={{JS_L}};
+  var base={{JS_BASE}};
+  var up={{JS_UP}};
+  var exp={{JS_EXP}};
+  if(!window.Chart)return;
+  new Chart(document.getElementById('ts'),{type:'line',data:{labels:L,datasets:[
+    {label:'Horná hranica (všetci emigranti započítaní dvakrát)',data:up,borderColor:v('--blue'),borderDash:[5,4],borderWidth:1.5,pointRadius:0,fill:{target:1},backgroundColor:v('--blue-band')},
+    {label:'Emigranti ako % domácich pracujúcich',data:base,borderColor:v('--blue'),borderWidth:2,pointRadius:3,pointBackgroundColor:v('--blue'),fill:false},
+    {label:'Ušlé poistné ako % výdavkov na starobné dôchodky',data:exp,borderColor:v('--orange'),borderDash:[2,3],borderWidth:2,pointRadius:3,pointStyle:'rectRot',pointBackgroundColor:v('--orange'),fill:false}]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return ' '+c.dataset.label+': '+c.parsed.y.toFixed(1).replace('.',',')+' %';}}}},
+      scales:{x:{grid:{display:false},ticks:{color:v('--muted'),maxRotation:0}},
+        y:{min:0,max:{{Y_MAX}},grid:{color:v('--rule')},ticks:{color:v('--muted'),callback:function(x){return x+' %';}}}}}});
+})();
+</script>
+</body>
+</html>

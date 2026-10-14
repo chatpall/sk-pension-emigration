@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Modul 1, verzia 2.2: Emigračné "riedenie" slovenského dôchodkového systému
+Modul 1, verzia 2.4: Emigračné "riedenie" slovenského dôchodkového systému
 ========================================================================
 
 Novinky oproti v1:
@@ -25,7 +25,12 @@ Výstupy v ./vystup:
   sk_referencne_data.csv    – slovenské vstupy podľa rokov
   scenare.csv               – scenáre × sadzby (posledný rok)
   casovy_rad.csv            – vývoj riedenia v čase (stabilný panel krajín)
+  slovnik_dat.csv           – popis každého stĺpca: význam, jednotka, importované/vypočítané, zdroj, vzorec
+  parametre.csv             – hodnoty všetkých predpokladov a pravidiel použitých v behu
   suhrn.md                  – čitateľný súhrn
+  index.html                – stránka s metodikou a aktuálnymi číslami (aj do docs/index.html)
+
+CSV sú v kódovaní UTF-8 s BOM (Excel zobrazí diakritiku), oddeľovač je čiarka.
 
 Zdroje (Eurostat JSON-stat API): migr_pop3ctb, migr_pop1ctz, demo_pjan,
 lfsa_ergan, nama_10_fte, spr_exp_pens. UK: Census 2021 (ONS), 2022 (NRS),
@@ -90,9 +95,9 @@ SCENARE = {
     "horny":       {"zamestnanost_rel": 1.00, "mzda_podiel": 1.00,
                     "popis": "všetci by pracovali ako priemerný občan SR za priemernú mzdu"},
     "realisticky": {"zamestnanost_rel": 0.83, "mzda_podiel": 0.85,
-                    "popis": "časť by doma prácu nenašla, mladší profil = nižšia mzda"},
+                    "popis": "časť by doma prácu nenašla, mladší profil znamená nižšiu mzdu"},
     "dolny":       {"zamestnanost_rel": 0.58, "mzda_podiel": 0.75,
-                    "popis": "veľká časť odišla z nezamestnanosti / nízkopríjmových regiónov"},
+                    "popis": "veľká časť odišla z nezamestnanosti alebo z nízkopríjmových regiónov"},
 }
 HLAVNY_SCENAR = "realisticky"
 
@@ -410,7 +415,7 @@ def fmt(x, d=0):
 
 
 def zapis_suhrn(odhad, vek, ref, sc, cas, panel):
-    L = ["# Emigračné riedenie dôchodkového systému SR – súhrn (v2.2)", ""]
+    L = ["# Emigračné riedenie dôchodkového systému SR – súhrn (v2.4)", ""]
 
     L += ["## 1. Spoľahlivosť dát podľa krajín", "",
           "| krajina | hodnotenie | definícia | rok | osoby 20–64 | dôvody |",
@@ -466,6 +471,436 @@ def zapis_suhrn(odhad, vek, ref, sc, cas, panel):
     (VYSTUP / "suhrn.md").write_text("\n".join(L), encoding="utf-8")
 
 
+# ---------------------------------------------------------------------------
+# Dátový slovník – popis každého stĺpca v každom výstupnom CSV
+# ---------------------------------------------------------------------------
+# typ:  importované                 – hodnota prevzatá zo zdroja (prípadne len prevod jednotky)
+#       vypočítané z importovaných  – súčet/kombinácia importovaných hodnôt (vzorec vo „vypocet“)
+#       vypočítané                  – výsledok modelu (vzorec vo „vypocet“)
+#       ručne zadané                – parameter alebo odhad zadaný v skripte
+#       klasifikácia                – hodnota priradená pravidlom
+#       identifikátor               – kľúč riadku (rok, krajina, scenár)
+
+API_ZDROJ = "Eurostat API"
+
+
+def _stlpec(subor, stlpec, popis, jednotka, typ, zdroj="", vypocet="", poznamka=""):
+    return {"subor": subor, "stlpec": stlpec, "popis": popis, "jednotka": jednotka,
+            "typ": typ, "zdroj": zdroj, "vypocet": vypocet, "poznamka": poznamka}
+
+
+def datovy_slovnik() -> list[dict]:
+    sc = SCENARE[HLAVNY_SCENAR]
+    D = []
+
+    # --- sk_referencne_data.csv -------------------------------------------
+    f = "sk_referencne_data.csv"
+    D += [
+        _stlpec(f, "rok", "Kalendárny rok, ku ktorému sa údaje vzťahujú", "rok", "identifikátor",
+                poznamka="Populácia je k 1. januáru daného roku, ostatné ukazovatele sú ročné. Prázdna bunka = Eurostat za daný rok ešte nepublikoval údaj."),
+        _stlpec(f, "populacia_20_64", "Počet obyvateľov SR vo veku 20–64 rokov k 1. januáru", "osoby",
+                "vypočítané z importovaných",
+                f"{API_ZDROJ}: demo_pjan (geo=SK, sex=T, age=Y20 … Y64)",
+                "súčet 45 jednotlivých rokov veku Y20 + Y21 + … + Y64",
+                "Rok sa použije, len ak je k dispozícii všetkých 45 rokov veku. Ide o ľudí s trvalým pobytom v SR, takže obsahuje aj emigrantov, ktorí sa neodhlásili (dvojité započítanie)."),
+        _stlpec(f, "zamestnanost_20_64", "Miera zamestnanosti občanov SR vo veku 20–64 rokov", "podiel (0–1)",
+                "importované",
+                f"{API_ZDROJ}: lfsa_ergan (geo=SK, sex=T, age=Y20-64, citizen=NAT, unit=PC)",
+                "hodnota v percentách ÷ 100 (len prevod jednotky)",
+                "Výberové zisťovanie pracovných síl (VZPS/LFS). Meria ľudí, ktorí v SR skutočne žijú. 0,78 = 78 % zamestnaných."),
+        _stlpec(f, "priemerna_mzda_rok_eur", "Priemerná ročná hrubá mzda na ekvivalent plného úväzku", "EUR za rok",
+                "importované",
+                f"{API_ZDROJ}: nama_10_fte (geo=SK, unit=EUR)", "",
+                "Údaj z národných účtov; je o niečo vyšší ako priemerná mesačná mzda ŠÚ SR × 12."),
+        _stlpec(f, "vydavky_dochodky_spolu_mil", "Všetky výdavky na dôchodky (starobné, predčasné, invalidné, pozostalostné a ďalšie)",
+                "mil. EUR", "importované",
+                f"{API_ZDROJ}: spr_exp_pens (geo=SK, spdepb=TOTAL, spdepm=TOTAL, unit=MIO_EUR)", "",
+                "Metodika ESSPROS."),
+        _stlpec(f, "vydavky_starobne_mil", "Výdavky na starobné a predčasné starobné dôchodky", "mil. EUR",
+                "vypočítané z importovaných",
+                f"{API_ZDROJ}: spr_exp_pens (spdepb=OLD a AOLD, spdepm=TOTAL, unit=MIO_EUR)",
+                "OLD (starobný dôchodok) + AOLD (predčasný starobný dôchodok)",
+                "Menovateľ pre všetky ukazovatele „% výdavkov na starobné dôchodky“."),
+    ]
+
+    # --- diaspora_odhad.csv a spolahlivost_krajin.csv -------------------------
+    spolocne = lambda f: [
+        _stlpec(f, "geo", "Kód hostiteľskej krajiny", "kód", "identifikátor",
+                poznamka="Kódy Eurostatu (napr. AT = Rakúsko, CZ = Česko, EL = Grécko, UK = Spojené kráľovstvo)."),
+        _stlpec(f, "definicia", "Definícia, podľa ktorej je počet určený", "text", "klasifikácia",
+                "", "narodeni_v_SR, ak existuje a nie je o viac ako 2 roky staršia ani podozrivá; inak obcania_SR; "
+                    f"pre CZ podľa parametra CZ_DEFINICIA ({CZ_DEFINICIA})",
+                "narodeni_v_SR = osoby narodené na Slovensku; obcania_SR = osoby so slovenským občianstvom."),
+        _stlpec(f, "rok", "Rok, z ktorého pochádza počet osôb", "rok", "importované",
+                f"{API_ZDROJ}: časová dimenzia datasetu zvolenej definície",
+                "najnovší rok, v ktorom je všetkých 9 vekových skupín 20–64",
+                "Pre UK ručne zadaný rok sčítania (2021)."),
+        _stlpec(f, "osoby_20_64", "Počet osôb vo veku 20–64 rokov v hostiteľskej krajine", "osoby",
+                "vypočítané z importovaných (UK: ručne zadané)",
+                f"{API_ZDROJ}: migr_pop3ctb (c_birth=SK) alebo migr_pop1ctz (citizen=SK); sex=T, unit=NR",
+                "súčet 9 päťročných skupín Y20-24 + Y25-29 + … + Y60-64",
+                f"UK: {MANUALNE['UK']['zdroj']}." if "UK" in MANUALNE else ""),
+        _stlpec(f, "hodnotenie", "Hodnotenie spoľahlivosti počtu", "spoľahlivé / orientačné / chýba", "klasifikácia",
+                "", f"spoľahlivé, ak: rok ≥ {PRAH_AKTUALNOST}, bez príznaku e/u, pomer definícií v rozsahu "
+                    f"{1/PRAH_NESULAD:.3f}–{PRAH_NESULAD}, obe definície z porovnateľného roku, nie ručný odhad, "
+                    "členenie nie je podozrivé; inak orientačné; chýba = bez dát",
+                "Podrobne v metodike, časť 3."),
+    ]
+    D += spolocne("diaspora_odhad.csv")
+    f = "spolahlivost_krajin.csv"
+    D += spolocne(f) + [
+        _stlpec(f, "alternativa", "Počet osôb 20–64 podľa druhej definície", "osoby", "vypočítané z importovaných",
+                f"{API_ZDROJ}: dataset druhej definície (migr_pop1ctz alebo migr_pop3ctb)",
+                "súčet 9 päťročných vekových skupín",
+                "Prázdne, ak druhá definícia chýba alebo je od zvolenej vzdialená viac ako 2 roky."),
+        _stlpec(f, "pomer_definicii", "Pomer zvolenej a druhej definície", "pomer", "vypočítané",
+                "", "osoby_20_64 ÷ alternativa",
+                f"Hodnota mimo {1/PRAH_NESULAD:.3f}–{PRAH_NESULAD} = nesúlad definícií. 1,0 = úplná zhoda."),
+        _stlpec(f, "priznaky", "Príznaky kvality, ktoré Eurostat uvádza pri hodnotách", "kódy", "importované",
+                f"{API_ZDROJ}: pole „status“ v odpovedi JSON-stat",
+                "zjednotenie príznakov všetkých 9 vekových skupín",
+                "e = odhad, u = nízka spoľahlivosť, b = zlom v časovom rade, p = predbežné, c = dôverné."),
+        _stlpec(f, "podozrive_clenenie", "Či je vekové členenie podozrivé", "True / False", "vypočítané",
+                "", f"True, ak 3 a viac vekových skupín má hodnotu 0 a súčet je aspoň {PRAH_MALY_POCET}",
+                "Signalizuje chybu alebo neúplnosť dát (napr. Belgicko podľa krajiny narodenia)."),
+        _stlpec(f, "zdroj", "Pôvod čísla", "text", "identifikátor",
+                poznamka="Názov datasetu Eurostatu alebo popis ručného odhadu."),
+        _stlpec(f, "dovody", "Dôvody, prečo krajina dostala dané hodnotenie", "text", "klasifikácia",
+                "", "zoznam podmienok, ktoré krajina nesplnila",
+                "„malý počet“ je len poznámka a hodnotenie nezhoršuje."),
+    ]
+
+    # --- vekova_struktura.csv ---------------------------------------------
+    f = "vekova_struktura.csv"
+    D.append(_stlpec(f, "geo", "Kód hostiteľskej krajiny", "kód", "identifikátor",
+                     poznamka="UK chýba, lebo ručný odhad nemá vekové členenie."))
+    for a in VEKOVE_SKUPINY:
+        od, do = a[1:].split("-")
+        D.append(_stlpec(f, a, f"Počet osôb vo veku {od}–{do} rokov", "osoby", "importované",
+                         f"{API_ZDROJ}: dataset a rok zvolenej definície (pozri diaspora_odhad.csv)", "",
+                         "Hodnota prevzatá bez úprav."))
+    D += [
+        _stlpec(f, "spolu_20_64", "Počet osôb vo veku 20–64 spolu", "osoby", "vypočítané z importovaných",
+                "", "súčet stĺpcov Y20-24 až Y60-64", "Zhoduje sa s osoby_20_64 v diaspora_odhad.csv."),
+        _stlpec(f, "podiel_45_64_%", "Podiel osôb vo veku 45–64 rokov", "%", "vypočítané",
+                "", "(Y45-49 + Y50-54 + Y55-59 + Y60-64) ÷ spolu_20_64 × 100",
+                "Vysoký podiel naznačuje dávnejšiu migráciu; nízky podiel mladých ľudí (študenti, nedávny odchod)."),
+    ]
+
+    # --- scenare.csv ----------------------------------------------------------
+    f = "scenare.csv"
+    vz = "N = osoby_20_64, z = zamestnanost_20_64, α = podiel zamestnanosti scenára, w = priemerna_mzda_rok_eur, β = podiel na mzde, γ = mzdový koeficient krajiny, s = sadzba"
+    D += [
+        _stlpec(f, "scenar", "Scenár kontrafaktuálu", "text", "ručne zadané", "parameter SCENARE",
+                "", "; ".join(f"{k}: α = {v['zamestnanost_rel']}, β = {v['mzda_podiel']}" for k, v in SCENARE.items())),
+        _stlpec(f, "sadzba", "Sadzba poistného použitá vo výpočte", "text", "ručne zadané",
+                "parameter SADZBY; zákon č. 461/2003 Z. z.", "",
+                "; ".join(f"{k} = {v:.4g}" for k, v in SADZBY.items())),
+        _stlpec(f, "krajiny", "Ktoré krajiny sú započítané", "všetky / len spoľahlivé", "klasifikácia",
+                "", "„len spoľahlivé“ = krajiny s hodnotením spoľahlivé",
+                "„len spoľahlivé“ slúži ako tvrdá spodná hranica."),
+        _stlpec(f, "emigranti_20_64", "Počet emigrantov 20–64 vo vybraných krajinách", "osoby", "vypočítané",
+                "", "Σ osoby_20_64 vybraných krajín"),
+        _stlpec(f, "chybajuci_pracujuci", "Koľko emigrantov by v SR pracovalo", "osoby", "vypočítané",
+                "", "Σ N × z × α", f"{vz}. z je posledný dostupný rok."),
+        _stlpec(f, "pct_domacich_pracujucich", "Chýbajúci pracujúci ako % pracujúcich v SR", "%", "vypočítané",
+                "", "chybajuci_pracujuci ÷ (populacia_20_64 × z) × 100",
+                "Mierne podhodnotené pre dvojité započítanie v populácii SR."),
+        _stlpec(f, "usle_odvody_mil_eur", "Poistné, ktoré by emigranti odviedli v SR", "mil. EUR za rok", "vypočítané",
+                "", "Σ N × z × α × w × β × γ × s ÷ 1 000 000", f"{vz}. γ: {MZDA_KOEF_KRAJINA}, ostatné krajiny 1,0."),
+        _stlpec(f, "pct_vydavkov_starobne", "Ušlé poistné ako % výdavkov na starobné dôchodky", "%", "vypočítané",
+                "", "usle_odvody_mil_eur ÷ vydavky_starobne_mil × 100",
+                "Výdavky z posledného roku, za ktorý ich Eurostat publikoval."),
+    ]
+
+    # --- casovy_rad.csv -----------------------------------------------------
+    f = "casovy_rad.csv"
+    D += [
+        _stlpec(f, "rok", "Kalendárny rok", "rok", "identifikátor",
+                poznamka="Len roky, pre ktoré sú k dispozícii aj všetky slovenské referenčné dáta."),
+        _stlpec(f, "emigranti_panel_20_64", "Počet emigrantov 20–64 v paneli krajín", "osoby",
+                "vypočítané z importovaných",
+                f"{API_ZDROJ}: migr_pop3ctb / migr_pop1ctz podľa zvolenej definície krajiny",
+                f"súčet krajín s dátami aspoň v {PANEL_MIN_PODIEL_ROKOV:.0%} rokov; chýbajúce vnútorné roky lineárne "
+                f"interpolované, okrajové doplnené najbližšou hodnotou (najviac {PANEL_DOPLN_ROKY} roky)",
+                "Bez UK a krajín s krátkym radom, preto nižšie ako v scenare.csv. Sleduje sa trend."),
+        _stlpec(f, "doplnene_krajiny", "Počet krajín, ktorých hodnota bola v danom roku doplnená", "počet", "vypočítané",
+                "", "počet krajín bez pôvodného údaja v danom roku",
+                "0 = všetky hodnoty sú pôvodné. Vyššie číslo = menej presný rok."),
+        _stlpec(f, "pct_domacich_pracujucich", "Chýbajúci pracujúci ako % pracujúcich v SR", "%", "vypočítané",
+                "", "Σ N(t) × z(t) × α ÷ (populacia_20_64(t) × z(t)) × 100",
+                f"Scenár {HLAVNY_SCENAR} (α = {sc['zamestnanost_rel']}). Všetky veličiny z daného roku t."),
+        _stlpec(f, "usle_odvody_mil_eur", "Ušlé poistné v danom roku", "mil. EUR za rok", "vypočítané",
+                "", "Σ N(t) × z(t) × α × w(t) × β × γ × s ÷ 1 000 000",
+                f"Scenár {HLAVNY_SCENAR}, sadzba {HLAVNA_SADZBA}. Nominálne eurá daného roku."),
+        _stlpec(f, "pct_vydavkov_starobne", "Ušlé poistné ako % výdavkov na starobné dôchodky v danom roku", "%",
+                "vypočítané", "", "usle_odvody_mil_eur(t) ÷ vydavky_starobne_mil(t) × 100",
+                "Citlivé na načasovanie valorizácie dôchodkov (napr. roky 2022–2023)."),
+    ]
+    return D
+
+
+def parametre_tabulka() -> pd.DataFrame:
+    r = [
+        ("ROK_OD", ROK_OD, "prvý rok sťahovaných dát", "nastavenie"),
+        ("CZ_DEFINICIA", CZ_DEFINICIA, "definícia použitá pre Česko", "predpoklad"),
+        ("HLAVNY_SCENAR", HLAVNY_SCENAR, "scenár pre časový rad", "nastavenie"),
+        ("HLAVNA_SADZBA", HLAVNA_SADZBA, "sadzba pre časový rad", "nastavenie"),
+        ("PRAH_AKTUALNOST", PRAH_AKTUALNOST, "najstarší rok pre hodnotenie spoľahlivé", "pravidlo"),
+        ("PRAH_NESULAD", PRAH_NESULAD, "max. pomer definícií pre hodnotenie spoľahlivé", "pravidlo"),
+        ("PRAH_MALY_POCET", PRAH_MALY_POCET, "hranica malého počtu osôb", "pravidlo"),
+        ("PANEL_MIN_PODIEL_ROKOV", PANEL_MIN_PODIEL_ROKOV, "min. pokrytie rokov pre panel časového radu", "pravidlo"),
+        ("PANEL_DOPLN_ROKY", PANEL_DOPLN_ROKY, "max. počet doplnených okrajových rokov", "pravidlo"),
+    ]
+    for k, v in SADZBY.items():
+        r.append((f"SADZBY[{k}]", v, "sadzba poistného z hrubej mzdy", "zákon č. 461/2003 Z. z."))
+    for k, v in SCENARE.items():
+        r.append((f"SCENARE[{k}].zamestnanost_rel", v["zamestnanost_rel"], "α – podiel slovenskej miery zamestnanosti", "predpoklad"))
+        r.append((f"SCENARE[{k}].mzda_podiel", v["mzda_podiel"], "β – podiel na priemernej mzde", "predpoklad"))
+    for k, v in MZDA_KOEF_KRAJINA.items():
+        r.append((f"MZDA_KOEF_KRAJINA[{k}]", v, "γ – mzdový koeficient krajiny", "predpoklad (ONS APS 2015/16)"))
+    for k, m in MANUALNE.items():
+        r.append((f"MANUALNE[{k}].osoby_20_64", m["osoby_20_64"], m["zdroj"], "ručný odhad"))
+    return pd.DataFrame(r, columns=["parameter", "hodnota", "popis", "druh"])
+
+
+def zapis_slovnik(vystupy: dict[str, pd.DataFrame]) -> None:
+    """Zapíše slovnik_dat.csv a parametre.csv a overí, že každý stĺpec má popis."""
+    sl = pd.DataFrame(datovy_slovnik())
+    popisane = set(zip(sl.subor, sl.stlpec))
+    chyba = [(s, c) for s, df in vystupy.items() for c in df.columns if (s, c) not in popisane]
+    navyse = [(s, c) for s, c in popisane if s in vystupy and c not in vystupy[s].columns]
+    for s, c in chyba:
+        print(f"   ! slovník: chýba popis stĺpca {s} → {c}")
+    for s, c in navyse:
+        print(f"   ! slovník: popísaný stĺpec, ktorý vo výstupe nie je: {s} → {c}")
+    poradie = {s: i for i, s in enumerate(vystupy)}
+    sl["_p"] = sl.subor.map(poradie)
+    sl = sl.sort_values("_p", kind="stable").drop(columns="_p")
+    zapis_csv(sl, "slovnik_dat.csv")
+    zapis_csv(parametre_tabulka(), "parametre.csv")
+
+
+def zapis_csv(df: pd.DataFrame, nazov: str) -> None:
+    # utf-8-sig: Excel správne zobrazí diakritiku
+    df.to_csv(VYSTUP / nazov, index=False, encoding="utf-8-sig")
+
+
+# ---------------------------------------------------------------------------
+# Generovanie stránky s metodikou (docs/index.html) zo šablóny
+# ---------------------------------------------------------------------------
+
+VERZIA = "2.4"
+SABLONA = Path(__file__).resolve().parent.parent / "docs" / "sablona.html"
+AKTUALIZOVAT_DOCS = True     # True = prepíše aj docs/index.html (pre GitHub Pages)
+
+NAZVY_KRAJIN = {
+    "AT": "Rakúsko", "BE": "Belgicko", "BG": "Bulharsko", "CY": "Cyprus", "CZ": "Česko",
+    "DE": "Nemecko", "DK": "Dánsko", "EE": "Estónsko", "EL": "Grécko", "ES": "Španielsko",
+    "FI": "Fínsko", "FR": "Francúzsko", "HR": "Chorvátsko", "HU": "Maďarsko", "IE": "Írsko",
+    "IT": "Taliansko", "LT": "Litva", "LU": "Luxembursko", "LV": "Lotyšsko", "MT": "Malta",
+    "NL": "Holandsko", "PL": "Poľsko", "PT": "Portugalsko", "RO": "Rumunsko", "SE": "Švédsko",
+    "SI": "Slovinsko", "CH": "Švajčiarsko", "NO": "Nórsko", "IS": "Island",
+    "LI": "Lichtenštajnsko", "UK": "Spojené kráľovstvo",
+}
+NAZVY_SCENAROV = {"horny": "horný", "realisticky": "realistický", "dolny": "dolný"}
+PILL = {"spoľahlivé": "ok", "orientačné": "mid", "chýba": "no"}
+
+
+def _cislo(x, d=0):
+    """Slovenský formát: medzera ako oddeľovač tisícov, desatinná čiarka."""
+    return f"{x:,.{d}f}".replace(",", " ").replace(".", ",")
+
+
+def _pct(x, d=1):
+    return f"{_cislo(x, d)} %"
+
+
+def _mil(x):
+    if x >= 1000:
+        return f"{_cislo(x / 1000, 2)} mld. €"
+    return f"{_cislo(x if x < 100 else round(x, -1))} mil. €"
+
+
+def _ciarky(text):
+    return __import__("re").sub(r"(\d)\.(\d)", r"\1,\2", str(text))
+
+
+def _nazov(geo):
+    return NAZVY_KRAJIN.get(geo, geo)
+
+
+def _zoznam(geos):
+    n = [_nazov(g) for g in geos]
+    return n[0] if len(n) == 1 else ", ".join(n[:-1]) + " a " + n[-1]
+
+
+def hodnoty_stranky(odhad, sc, cas, ref, panel) -> dict:
+    import json, math, datetime
+    h = {}
+    dnes = datetime.date.today()
+    h["DATUM"] = f"{dnes.day}. {dnes.month}. {dnes.year}"
+    h["VERZIA"] = VERZIA
+    h["ROK_OD"] = str(ROK_OD)
+    h["SCENAR_TXT"] = NAZVY_SCENAROV.get(HLAVNY_SCENAR, HLAVNY_SCENAR)
+    h["SADZBA_TXT"] = _pct(SADZBY[HLAVNA_SADZBA] * 100, 0 if (SADZBY[HLAVNA_SADZBA] * 100).is_integer() else 2)
+    h["ROK_VYD"] = str(posledna(ref, "vydavky_starobne_mil")[0])
+
+    # --- hlavné výsledky
+    vs = sc[sc.krajiny == "všetky"]
+    hl = vs[(vs.scenar == HLAVNY_SCENAR) & (vs.sadzba == HLAVNA_SADZBA)].iloc[0]
+    h["KPI_EMIGRANTI"] = f"~{_cislo(hl.emigranti_20_64 / 1000)} tis."
+    h["KPI_PCT_DOM"] = _pct(hl.pct_domacich_pracujucich)
+    h["KPI_ODVODY"] = "~" + _mil(hl.usle_odvody_mil_eur)
+    h["KPI_PCT_VYD"] = _pct(hl.pct_vydavkov_starobne)
+    sp = sc[(sc.krajiny == "len spoľahlivé") & (sc.scenar == "dolny")].sort_values("usle_odvody_mil_eur").iloc[0]
+    h["ROZSAH_TXT"] = (
+        f"Rozsah všetkých scenárov a sadzieb je {_mil(vs.usle_odvody_mil_eur.min())} až "
+        f"{_mil(vs.usle_odvody_mil_eur.max())} ročne, teda {_cislo(vs.pct_vydavkov_starobne.min())} až "
+        f"{_cislo(vs.pct_vydavkov_starobne.max())} % výdavkov na starobné dôchodky. Ak počítame len krajiny "
+        f"so spoľahlivými dátami a najopatrnejší scenár, dostaneme tvrdú spodnú hranicu "
+        f"{_mil(sp.usle_odvody_mil_eur)} ({_pct(sp.pct_vydavkov_starobne)}).")
+
+    # --- postup
+    if CZ_DEFINICIA == "obcania_SR":
+        cz = ("Výnimkou je Česko. Tam sa používa definícia občanov, lebo „narodení v SR“ zahŕňa aj ľudí, "
+              "ktorí sa presťahovali ešte v Československu.")
+    else:
+        cz = ("Pre Česko sa používa definícia narodených v SR. Je to horná hranica, lebo zahŕňa aj ľudí, "
+              "ktorí sa presťahovali ešte v Československu.")
+    man = " ".join(f"{_nazov(g)} Eurostat nehlási, preto ho dopĺňame ručne: {_ciarky(m['zdroj'])}."
+                   for g, m in MANUALNE.items())
+    h["KROK_A_VYNIMKY"] = f"{cz} {man}".strip()
+    h["GAMMA_TXT"] = ", ".join(f"{g} = {_cislo(v, 2)}" for g, v in MZDA_KOEF_KRAJINA.items()) + ", ostatné 1,0"
+    h["SCENARE_RIADKY"] = "\n".join(
+        f'      <tr><td>{NAZVY_SCENAROV.get(k, k).capitalize()}</td><td class="n">{_cislo(v["zamestnanost_rel"], 2)}</td>'
+        f'<td class="n">{_cislo(v["mzda_podiel"], 2)}</td><td>{v["popis"]}</td></tr>' for k, v in SCENARE.items())
+
+    # --- spoľahlivosť
+    h["PRAH_ROK"] = str(PRAH_AKTUALNOST)
+    h["PRAH_NESULAD"] = _cislo(PRAH_NESULAD, 1)
+    h["PRAH_MALY"] = _cislo(PRAH_MALY_POCET)
+    riadky = []
+    for hod in ["spoľahlivé", "orientačné", "chýba"]:
+        d = odhad[odhad.hodnotenie == hod]
+        suma = "–" if d.osoby_20_64.isna().all() else _cislo(d.osoby_20_64.sum())
+        riadky.append(f'      <tr><td><span class="pill {PILL[hod]}">{hod}</span></td><td class="n">{len(d)}</td>'
+                      f'<td class="n">{suma}</td><td>{", ".join(d.geo) or "–"}</td></tr>')
+    h["SPOLAHLIVOST_RIADKY"] = "\n".join(riadky)
+
+    dostupne = odhad.dropna(subset=["osoby_20_64"])
+    orient = dostupne[dostupne.hodnotenie == "orientačné"].head(3)
+    if len(orient):
+        podiel = 100 * orient.osoby_20_64.sum() / dostupne.osoby_20_64.sum()
+        casti = [f"{_nazov(r.geo)} ({_cislo(r.osoby_20_64 / 1000)} tis.; {_ciarky(r.dovody)})" for _, r in orient.iterrows()]
+        h["NAJVACSIE_ORIENTACNE"] = (f"Najväčšie krajiny s orientačnými dátami sú {'; '.join(casti)}. "
+                                     f"Spolu tvoria {_pct(podiel, 0)} odhadovanej diaspóry, takže neistota v nich "
+                                     "ovplyvňuje výsledok najviac.")
+    else:
+        h["NAJVACSIE_ORIENTACNE"] = "Všetky krajiny s dátami majú hodnotenie spoľahlivé."
+    obc = [g for g in odhad[odhad.definicia == "obcania_SR"].geo]
+    h["OBCANIA_V_BEHU"] = (f"V tomto behu sa definícia občanov použila pre: {_zoznam(obc)}." if obc
+                           else "V tomto behu sa definícia občanov nepoužila pre žiadnu krajinu.")
+    pr = []
+    for _, r in dostupne.head(4).iterrows():
+        defin = "narodení v SR" if r.definicia == "narodeni_v_SR" else "slovenskí občania"
+        t = f"<strong>{_nazov(r.geo)}:</strong> rok {int(r.rok)}, {defin}: {_cislo(r.osoby_20_64)}"
+        if pd.notna(r.alternativa):
+            t += f"; druhá definícia {_cislo(r.alternativa)} (pomer {_cislo(r.pomer_definicii, 2)})"
+        t += f". Výsledok: <span class=\"pill {PILL[r.hodnotenie]}\">{r.hodnotenie}</span>"
+        if r.hodnotenie != "spoľahlivé":
+            t += f" – {_ciarky(r.dovody)}"
+        pr.append(f"        <li>{t}</li>")
+    h["PRIKLADY"] = "\n".join(pr)
+    chyba = list(odhad[odhad.hodnotenie == "chýba"].geo)
+    h["CHYBAJUCE_TXT"] = ((f"Chýba {', '.join(_nazov(g) for g in chyba)}, ako aj krajiny mimo Európy (USA, Kanada, Austrália)." if chyba
+                           else "Chýbajú krajiny mimo Európy (USA, Kanada, Austrália)."))
+
+    # --- časový rad
+    h["PANEL_PCT"] = _pct(PANEL_MIN_PODIEL_ROKOV * 100, 0)
+    h["PANEL_N"] = str(len(panel))
+    h["PANEL_DOPLN"] = str(PANEL_DOPLN_ROKY)
+    c = cas.sort_values("rok").reset_index(drop=True)
+    pop = c.rok.map(ref["populacia_20_64"])
+    base = c.pct_domacich_pracujucich
+    up = base * pop / (pop - c.emigranti_panel_20_64)
+    exp_ = c.pct_vydavkov_starobne
+    h["JS_L"] = json.dumps([str(int(y)) for y in c.rok])
+    h["JS_BASE"] = json.dumps([round(float(x), 2) for x in base])
+    h["JS_UP"] = json.dumps([round(float(x), 2) for x in up])
+    h["JS_EXP"] = json.dumps([round(float(x), 2) for x in exp_])
+    h["Y_MAX"] = str(math.ceil(max(up.max(), exp_.max()) + 0.5))
+    y0, yN = int(c.rok.iloc[0]), int(c.rok.iloc[-1])
+    h["ARIA"] = (f"Čiarový graf {y0} až {yN}. Pomer emigrantov k domácim pracujúcim {_pct(base.iloc[0])} až "
+                 f"{_pct(base.iloc[-1])}, horná hranica pásma {_pct(up.iloc[0])} až {_pct(up.iloc[-1])}. "
+                 f"Ušlé poistné ako podiel výdavkov {_pct(exp_.iloc[0])} až {_pct(exp_.iloc[-1])}.")
+
+    smer = (" Systém teda stráca čoraz väčšiu časť potenciálnych platiteľov." if base.iloc[-1] > base.iloc[0]
+            else " Podiel chýbajúcich platiteľov sa teda zmenšuje.")
+    h["CITANIE_01"] = ("<strong>Plná modrá čiara</strong> ukazuje, koľko percent domácich pracujúcich by tvorili "
+                       f"emigranti, keby pracovali na Slovensku. Medzi rokmi {y0} a {yN} sa zmenila z "
+                       f"{_pct(base.iloc[0])} na {_pct(base.iloc[-1])}.{smer}")
+    sirka = up - base
+    i = int(sirka.idxmax())
+    h["CITANIE_02"] = ("<strong>Modré pásmo</strong> zobrazuje neistotu z dvojitého započítania. Veľa emigrantov "
+                       "sa neodhlási z trvalého pobytu, a tak sú v slovenskej populácii aj v diaspóre. Spodný okraj "
+                       "predpokladá, že nikto nie je započítaný dvakrát. Horný okraj (prerušovaná čiara) predpokladá, "
+                       "že všetci emigranti z panelu stále figurujú v populácii SR. Skutočnosť je niekde v pásme. "
+                       f"Šírka pásma je najviac {_cislo(sirka.max(), 1)} percentuálneho bodu (rok {int(c.rok[i])}).")
+    k = min(5, len(c))
+    h["CITANIE_03"] = ("<strong>Oranžová bodkovaná čiara</strong> ukazuje ušlé poistné ako podiel skutočných výdavkov "
+                       "na starobné dôchodky. Dvojité započítanie sa jej netýka, lebo výdavky sú reálne vyplatené "
+                       f"peniaze. V roku {yN} je {_pct(exp_.iloc[-1])}, priemer posledných {k} rokov je "
+                       f"{_pct(exp_.tail(k).mean())}.")
+    if len(c) >= 2:
+        zmena = exp_.diff().abs()
+        j = int(zmena.idxmax())
+        r0, r1 = int(c.rok[j - 1]), int(c.rok[j])
+        g_ods = 100 * (c.usle_odvody_mil_eur[j] / c.usle_odvody_mil_eur[j - 1] - 1)
+        g_vyd = 100 * (ref.loc[r1, "vydavky_starobne_mil"] / ref.loc[r0, "vydavky_starobne_mil"] - 1)
+        t = (f"<strong>Najväčšia ročná zmena</strong> oranžovej čiary je medzi rokmi {r0} a {r1} "
+             f"({_pct(exp_[j - 1])} → {_pct(exp_[j])}). Ušlé poistné sa zmenilo o {_cislo(g_ods, 1)} %, "
+             f"výdavky na starobné dôchodky o {_cislo(g_vyd, 1)} %.")
+        if abs(g_ods - g_vyd) > 5:
+            t += (" Zmenu teda spôsobil rozdielny rast oboch veličín, nie zmena počtu emigrantov ani chyba dát. "
+                  "Ušlé poistné rastie spolu s mzdami, výdavky s valorizáciou dôchodkov, ktorá sa riadi infláciou "
+                  "z minulého obdobia. Keď sa tieto dva rasty rozídu, podiel sa pohne.")
+        h["CITANIE_04"] = t
+    else:
+        h["CITANIE_04"] = "Časový rad má len jeden rok, zmeny sa nedajú porovnať."
+    dopl = [f"{int(r.rok)} ({int(r.doplnene_krajiny)})" for _, r in c.iterrows() if r.doplnene_krajiny > 0]
+    t = (f"<strong>Doplnené hodnoty</strong> (rok a počet krajín): {', '.join(dopl)}. Tieto roky sú menej presné."
+         if dopl else "<strong>Doplnené hodnoty:</strong> žiadny rok neobsahuje doplnené hodnoty.")
+    pokles = c.emigranti_panel_20_64.pct_change() * 100
+    for j in pokles.index[pokles < -5]:
+        t += (f" <strong>Pokles v roku {int(c.rok[j])}</strong> ({_cislo(pokles[j], 1).replace('-', '−')} %) môže byť revízia dát "
+              "hostiteľských krajín, napríklad po sčítaní obyvateľov.")
+    h["CITANIE_05"] = t
+    return h
+
+
+def generuj_stranku(odhad, sc, cas, ref, panel, ciele=None) -> None:
+    import re
+    if not SABLONA.exists():
+        print(f"   (šablóna {SABLONA} neexistuje, stránka sa negeneruje)")
+        return
+    html = SABLONA.read_text(encoding="utf-8")
+    hodnoty = hodnoty_stranky(odhad, sc, cas, ref, panel)
+    html = re.sub(r"\{\{([A-Z_0-9]+)\}\}", lambda m: str(hodnoty.get(m.group(1), m.group(0))), html)
+    html = html.replace("<!-- ŠABLÓNA: index.html generuje skript src/sk_dochodky_emigracia.py. Upravuj tento súbor, "
+                        "nie index.html. Značky {{...}} dopĺňa skript. -->\n",
+                        "<!-- Vygenerované skriptom src/sk_dochodky_emigracia.py zo šablóny docs/sablona.html. "
+                        "Neupravuj ručne. -->\n")
+    zvysne = sorted(set(re.findall(r"\{\{([A-Z_0-9]+)\}\}", html)))
+    if zvysne:
+        print(f"   ! stránka: nevyplnené značky {zvysne}")
+    if ciele is None:
+        ciele = [VYSTUP / "index.html"] + ([SABLONA.parent / "index.html"] if AKTUALIZOVAT_DOCS else [])
+    for p in ciele:
+        Path(p).write_text(html, encoding="utf-8")
+        print(f"   stránka zapísaná: {p}")
+
+
 def main():
     VYSTUP.mkdir(exist_ok=True)
     dlha = nacitaj_diasporu()
@@ -476,13 +911,19 @@ def main():
     sc = scenare(odhad, ref)
     cas, panel = casovy_rad(roky, odhad, ref)
 
-    odhad.to_csv(VYSTUP / "spolahlivost_krajin.csv", index=False)
-    odhad[["geo", "definicia", "rok", "osoby_20_64", "hodnotenie"]].to_csv(VYSTUP / "diaspora_odhad.csv", index=False)
-    vek.to_csv(VYSTUP / "vekova_struktura.csv")
-    ref.to_csv(VYSTUP / "sk_referencne_data.csv")
-    sc.to_csv(VYSTUP / "scenare.csv", index=False)
-    cas.to_csv(VYSTUP / "casovy_rad.csv", index=False)
+    vystupy = {
+        "sk_referencne_data.csv": ref.reset_index(),
+        "diaspora_odhad.csv": odhad[["geo", "definicia", "rok", "osoby_20_64", "hodnotenie"]],
+        "spolahlivost_krajin.csv": odhad,
+        "vekova_struktura.csv": vek.reset_index(),
+        "scenare.csv": sc,
+        "casovy_rad.csv": cas,
+    }
+    for nazov, df in vystupy.items():
+        zapis_csv(df, nazov)
+    zapis_slovnik(vystupy)
     zapis_suhrn(odhad, vek, ref, sc, cas, panel)
+    generuj_stranku(odhad, sc, cas, ref, panel)
 
     pd.set_option("display.width", 200)
     print("\n=== SPOĽAHLIVOSŤ ===")
