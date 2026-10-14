@@ -64,6 +64,14 @@ details.explain[open]>summary::after{content:"\2212"}
 details.explain>summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:6px}
 details.explain .body{padding:0 1rem 1.1rem;display:flex;flex-direction:column;gap:.9rem;border-top:1px solid var(--rule);padding-top:1rem}
 details.explain .tbl{background:var(--bg)}
+.ex-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:12px}
+.ex-step{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:.85rem 1rem;display:flex;flex-direction:column;gap:.35rem;min-width:0}
+.ex-step .lbl{font:500 .75rem/1.3 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.ex-step .f{font-family:var(--f-mono);font-size:.9rem;overflow-x:auto;white-space:nowrap}
+.ex-step .r{font:500 1.35rem/1.2 var(--f-display);font-variant-numeric:tabular-nums lining-nums}
+.sym{font-family:var(--f-mono);font-weight:500;background:var(--blue-band);color:var(--ink);border-radius:4px;padding:0 .3em;white-space:nowrap}
+.formula-big{font-family:var(--f-mono);font-size:1.05rem;background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:1rem 1.1rem;overflow-x:auto;line-height:2.1;white-space:nowrap}
+.ok-line{font-size:.9rem;color:var(--muted)}
 footer{font-size:.85rem;color:var(--muted)}
 @media (max-width:480px){h1{font-size:1.9rem}}
 </style>
@@ -238,8 +246,42 @@ s       sadzba poistného</div>
   </div>
 </section>
 
+<section id="modelovy-priklad">
+  <h2>5. Modelový príklad: rok 2019</h2>
+  <p>Jeden bod grafu z časti 4 rozpísaný do posledného čísla. Rok 2019 je vybraný preto, že všetky počty emigrantov v ňom sú skutočne nahlásené údaje, bez dopĺňania. Použitý je realistický scenár a sadzba 18 %.</p>
+
+  <h3>Vzorec</h3>
+  <div class="formula-big">ušlé poistné <span class="sym">O</span> = <span class="sym">N</span> × <span class="sym">z</span> × <span class="sym">α</span> × <span class="sym">w</span> × <span class="sym">β</span> × <span class="sym">γ</span> × <span class="sym">s</span><br>podiel na výdavkoch = <span class="sym">O</span> ÷ <span class="sym">V</span><br>podiel chýbajúcich pracujúcich = (<span class="sym">N</span> × <span class="sym">z</span> × <span class="sym">α</span>) ÷ (<span class="sym">L</span> × <span class="sym">z</span>)</div>
+
+  <h3>Parametre, ktoré do vzorca vstupujú</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Symbol</th><th>Význam</th><th class="n">Hodnota 2019</th><th>Druh</th><th>Zdroj</th></tr></thead>
+    <tbody>
+      <tr><td><span class="sym">N</span></td><td>Slováci 20–64 v paneli 17 krajín</td><td class="n">203 079</td><td><span class="pill ok">importované</span></td><td>migr_pop3ctb / migr_pop1ctz, súčet krajín panela (všetky hodnoty pôvodné)</td></tr>
+      <tr><td><span class="sym">L</span></td><td>populácia SR 20–64</td><td class="n">3 453 283</td><td><span class="pill mid">vypočítané</span></td><td>demo_pjan, súčet rokov veku 20–64</td></tr>
+      <tr><td><span class="sym">z</span></td><td>miera zamestnanosti občanov SR 20–64</td><td class="n">0,734</td><td><span class="pill ok">importované</span></td><td>lfsa_ergan (÷ 100)</td></tr>
+      <tr><td><span class="sym">α</span></td><td>podiel zamestnanosti, ktorý by emigranti doma dosiahli</td><td class="n">0,83</td><td><span class="pill no">parameter</span></td><td>scenár realistický</td></tr>
+      <tr><td><span class="sym">w</span></td><td>priemerná ročná mzda na plný úväzok</td><td class="n">14 857 €</td><td><span class="pill ok">importované</span></td><td>nama_10_fte</td></tr>
+      <tr><td><span class="sym">β</span></td><td>podiel emigranta na priemernej mzde</td><td class="n">0,85</td><td><span class="pill no">parameter</span></td><td>scenár realistický</td></tr>
+      <tr><td><span class="sym">γ</span></td><td>mzdový koeficient krajiny</td><td class="n">1,00</td><td><span class="pill no">parameter</span></td><td>1,00 pre krajiny panela (UK v paneli nie je)</td></tr>
+      <tr><td><span class="sym">s</span></td><td>sadzba poistného</td><td class="n">18 %</td><td><span class="pill no">parameter</span></td><td>zákon č. 461/2003 Z. z.</td></tr>
+      <tr><td><span class="sym">V</span></td><td>výdavky na starobné dôchodky</td><td class="n">6 105,03 mil. €</td><td><span class="pill mid">vypočítané</span></td><td>spr_exp_pens, OLD + AOLD</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Výpočet krok za krokom</h3>
+  <div class="ex-grid">
+    <div class="ex-step"><span class="lbl">1 · Koľko by ich pracovalo v SR</span><span class="f"><span class="sym">N</span> × <span class="sym">z</span> × <span class="sym">α</span></span><span class="f">203 079 × 0,734 × 0,83</span><span class="r">123 720 osôb</span></div>
+    <div class="ex-step"><span class="lbl">2 · Koľko ľudí pracuje doma</span><span class="f"><span class="sym">L</span> × <span class="sym">z</span></span><span class="f">3 453 283 × 0,734</span><span class="r">2 534 710 osôb</span></div>
+    <div class="ex-step"><span class="lbl">3 · Podiel chýbajúcich pracujúcich</span><span class="f">krok 1 ÷ krok 2</span><span class="f">123 720 ÷ 2 534 710</span><span class="r">4,88 %</span></div>
+    <div class="ex-step"><span class="lbl">4 · Ušlé poistné za rok</span><span class="f">krok 1 × <span class="sym">w</span> × <span class="sym">β</span> × <span class="sym">γ</span> × <span class="sym">s</span></span><span class="f">123 720 × 14 857 € × 0,85 × 1,00 × 0,18</span><span class="r">281,23 mil. €</span></div>
+    <div class="ex-step"><span class="lbl">5 · Podiel na výdavkoch na starobné dôchodky</span><span class="f">krok 4 ÷ <span class="sym">V</span></span><span class="f">281,23 ÷ 6 105,03</span><span class="r">4,61 %</span></div>
+  </div>
+  <p class="ok-line">Kontrola: výsledky krokov 3, 4 a 5 sa zhodujú s riadkom 2019 v súbore <code>casovy_rad.csv</code>.</p>
+</section>
+
 <section>
-  <h2>5. Zdroje dát</h2>
+  <h2>6. Zdroje dát</h2>
   <div class="tbl"><table>
     <thead><tr><th>Údaj</th><th>Zdroj</th><th>Kód / odkaz</th></tr></thead>
     <tbody>
@@ -260,7 +302,7 @@ s       sadzba poistného</div>
 </section>
 
 <section>
-  <h2>6. Obmedzenia</h2>
+  <h2>7. Obmedzenia</h2>
   <ul>
     <li><strong>Kontrafaktuál je predpoklad.</strong> Nevieme, koľko emigrantov by doma našlo prácu a za akú mzdu. Preto pracujeme s tromi scenármi a nie s jedným číslom.</li>
     <li><strong>Pokrytie.</strong> Chýba Cyprus, Grécko, Španielsko, Francúzsko, Chorvátsko, Malta, Poľsko, ako aj krajiny mimo Európy (USA, Kanada, Austrália).</li>
@@ -272,7 +314,7 @@ s       sadzba poistného</div>
 </section>
 
 <section>
-  <h2>7. Ďalšie kroky</h2>
+  <h2>8. Ďalšie kroky</h2>
   <ul>
     <li><strong>Modul 2:</strong> demografická projekcia do roku 2060 (Eurostat EUROPOP2023) a rozklad budúceho deficitu na starnutie, pôrodnosť, emigráciu a zamestnanosť.</li>
     <li><strong>Druhý ukazovateľ</strong> ušlého poistného vo vzťahu k celkovému výberu poistného alebo k HDP, ktorý nevyskakuje pri inflačných šokoch.</li>
@@ -281,7 +323,7 @@ s       sadzba poistného</div>
   </ul>
 </section>
 
-<footer>Výpočty: skript <code>sk_dochodky_emigracia.py</code> (verzia 2.4), stránka vygenerovaná 14. 10. 2026. Odhady sú orientačné a slúžia na rádové zhodnotenie problému.</footer>
+<footer>Výpočty: skript <code>sk_dochodky_emigracia.py</code> (verzia 2.5), stránka vygenerovaná 14. 10. 2026. Odhady sú orientačné a slúžia na rádové zhodnotenie problému.</footer>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>

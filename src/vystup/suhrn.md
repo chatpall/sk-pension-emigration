@@ -1,4 +1,4 @@
-# Emigračné riedenie dôchodkového systému SR – súhrn (v2.4)
+# Emigračné riedenie dôchodkového systému SR – súhrn (v2.6)
 
 ## 1. Spoľahlivosť dát podľa krajín
 

@@ -47,6 +47,7 @@ Výsledky sa uložia do priečinka `vystup/`:
 | `sk_referencne_data.csv` | slovenské vstupy podľa rokov |
 | `scenare.csv` | scenáre × sadzby za posledný rok |
 | `casovy_rad.csv` | vývoj riedenia v čase |
+| `casovy_rad_krajiny.csv` | rozpis časového radu po krajinách a rokoch: pôvodná, interpolovaná alebo doplnená hodnota |
 | `slovnik_dat.csv` | popis každého stĺpca: význam, jednotka, či je importovaný alebo vypočítaný, zdroj a vzorec |
 | `parametre.csv` | hodnoty všetkých predpokladov a pravidiel použitých v behu |
 | `index.html` | stránka s metodikou vyplnená číslami z tohto behu |
@@ -96,6 +97,8 @@ Dáta Eurostatu sa sťahujú cez verejné API bez registrácie: `https://ec.euro
 
 ## História verzií
 
+- **2.6** – modelový príklad výpočtu jedného roka na stránke s metodikou (vzorec, parametre, kroky, kontrola zhody)
+- **2.5** – rozpis časového radu po krajinách (`casovy_rad_krajiny.csv`) a podiel doplnených osôb v každom roku
 - **2.4** – stránka s metodikou sa generuje zo šablóny `docs/sablona.html` z výsledkov behu
 - **2.3** – dátový slovník (`slovnik_dat.csv`) a zoznam parametrov (`parametre.csv`), CSV v UTF-8 s BOM
 - **2.2** – krížová kontrola definícií len pri porovnateľnom roku

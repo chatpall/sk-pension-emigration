@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Modul 1, verzia 2.4: Emigračné "riedenie" slovenského dôchodkového systému
+Modul 1, verzia 2.6: Emigračné "riedenie" slovenského dôchodkového systému
 ========================================================================
 
 Novinky oproti v1:
@@ -25,6 +25,7 @@ Výstupy v ./vystup:
   sk_referencne_data.csv    – slovenské vstupy podľa rokov
   scenare.csv               – scenáre × sadzby (posledný rok)
   casovy_rad.csv            – vývoj riedenia v čase (stabilný panel krajín)
+  casovy_rad_krajiny.csv    – rozpis časového radu: krajina × rok, pôvodná / doplnená hodnota
   slovnik_dat.csv           – popis každého stĺpca: význam, jednotka, importované/vypočítané, zdroj, vzorec
   parametre.csv             – hodnoty všetkých predpokladov a pravidiel použitých v behu
   suhrn.md                  – čitateľný súhrn
@@ -371,6 +372,9 @@ def scenare(odhad: pd.DataFrame, ref: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(riadky)
 
 
+CASOVY_RAD_KRAJINY: dict = {}   # rozpis časového radu po krajinách (plní casovy_rad)
+
+
 def casovy_rad(roky: pd.DataFrame, odhad: pd.DataFrame, ref: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
     """Stabilný panel: krajiny so zvolenou definíciou dostupnou v ≥80 % rokov; medzery interpolované."""
     kl = odhad.dropna(subset=["definicia"])
@@ -383,9 +387,39 @@ def casovy_rad(roky: pd.DataFrame, odhad: pd.DataFrame, ref: pd.DataFrame) -> tu
     pokrytie = t.notna().mean()
     panel = sorted(pokrytie[pokrytie >= PANEL_MIN_PODIEL_ROKOV].index)
     povodne = t[panel].notna()
-    t = (t[panel].interpolate(limit_area="inside")
-                 .ffill(limit=PANEL_DOPLN_ROKY).bfill(limit=PANEL_DOPLN_ROKY))
-    doplnene = (~povodne & t.notna()).sum(axis=1)
+    interp = t[panel].interpolate(limit_area="inside")
+    je_interp = interp.notna() & ~povodne
+    vsetko = t                                    # pôvodné hodnoty všetkých krajín (aj mimo panela)
+    t = interp.ffill(limit=PANEL_DOPLN_ROKY).bfill(limit=PANEL_DOPLN_ROKY)
+    je_dopl = t.notna() & ~povodne & ~je_interp
+    doplnene = (je_interp | je_dopl).sum(axis=1)
+    osoby_dopl = t.where(je_interp | je_dopl).sum(axis=1)
+
+    # rozpis po krajinách a rokoch (casovy_rad_krajiny.csv)
+    defin = dict(zip(kl.geo, kl.definicia))
+    det = []
+    for rok in vsetky_roky:
+        for geo in vsetko.columns:
+            if geo in panel:
+                v = t.loc[rok, geo]
+                if pd.isna(v):
+                    sp = "chýba (rok vynechaný)"
+                elif povodne.loc[rok, geo]:
+                    sp = "pôvodná"
+                elif je_interp.loc[rok, geo]:
+                    sp = "interpolovaná"
+                else:
+                    sp = "doplnená najbližšou hodnotou"
+            else:
+                v = vsetko.loc[rok, geo]
+                if pd.isna(v):
+                    continue
+                sp = "mimo panela (nezapočítané)"
+            det.append({"rok": rok, "geo": geo, "krajina": NAZVY_KRAJIN.get(geo, geo),
+                        "definicia": defin.get(geo), "osoby_20_64": None if pd.isna(v) else round(float(v)),
+                        "v_paneli": geo in panel, "sposob": sp})
+    CASOVY_RAD_KRAJINY["df"] = pd.DataFrame(det)
+
     t = t.dropna()                       # len roky, kde má hodnotu celý panel
     sc, sd = SCENARE[HLAVNY_SCENAR], SADZBY[HLAVNA_SADZBA]
     riadky = []
@@ -400,6 +434,7 @@ def casovy_rad(roky: pd.DataFrame, odhad: pd.DataFrame, ref: pd.DataFrame) -> tu
         domaci = x.populacia_20_64 * x.zamestnanost_20_64
         riadky.append({"rok": int(rok), "emigranti_panel_20_64": round(rad.sum()),
                        "doplnene_krajiny": int(doplnene.loc[rok]),
+                       "podiel_doplnenych_osob_pct": 100 * osoby_dopl.loc[rok] / rad.sum(),
                        "pct_domacich_pracujucich": 100 * prac / domaci,
                        "usle_odvody_mil_eur": ods / 1e6,
                        "pct_vydavkov_starobne": 100 * ods / (x.vydavky_starobne_mil * 1e6)})
@@ -415,7 +450,7 @@ def fmt(x, d=0):
 
 
 def zapis_suhrn(odhad, vek, ref, sc, cas, panel):
-    L = ["# Emigračné riedenie dôchodkového systému SR – súhrn (v2.4)", ""]
+    L = ["# Emigračné riedenie dôchodkového systému SR – súhrn (v2.6)", ""]
 
     L += ["## 1. Spoľahlivosť dát podľa krajín", "",
           "| krajina | hodnotenie | definícia | rok | osoby 20–64 | dôvody |",
@@ -627,6 +662,10 @@ def datovy_slovnik() -> list[dict]:
         _stlpec(f, "doplnene_krajiny", "Počet krajín, ktorých hodnota bola v danom roku doplnená", "počet", "vypočítané",
                 "", "počet krajín bez pôvodného údaja v danom roku",
                 "0 = všetky hodnoty sú pôvodné. Vyššie číslo = menej presný rok."),
+        _stlpec(f, "podiel_doplnenych_osob_pct", "Podiel osôb v paneli, ktorých počet je v danom roku doplnený", "%",
+                "vypočítané", "", "Σ doplnených hodnôt (interpolovaných alebo najbližšou hodnotou) ÷ emigranti_panel_20_64 × 100",
+                "Lepšie meradlo presnosti roka ako počet krajín: ukazuje, akú váhu majú doplnené krajiny. "
+                "Rozpis je v casovy_rad_krajiny.csv."),
         _stlpec(f, "pct_domacich_pracujucich", "Chýbajúci pracujúci ako % pracujúcich v SR", "%", "vypočítané",
                 "", "Σ N(t) × z(t) × α ÷ (populacia_20_64(t) × z(t)) × 100",
                 f"Scenár {HLAVNY_SCENAR} (α = {sc['zamestnanost_rel']}). Všetky veličiny z daného roku t."),
@@ -636,6 +675,24 @@ def datovy_slovnik() -> list[dict]:
         _stlpec(f, "pct_vydavkov_starobne", "Ušlé poistné ako % výdavkov na starobné dôchodky v danom roku", "%",
                 "vypočítané", "", "usle_odvody_mil_eur(t) ÷ vydavky_starobne_mil(t) × 100",
                 "Citlivé na načasovanie valorizácie dôchodkov (napr. roky 2022–2023)."),
+    ]
+    # --- casovy_rad_krajiny.csv ---------------------------------------------
+    f = "casovy_rad_krajiny.csv"
+    D += [
+        _stlpec(f, "rok", "Kalendárny rok", "rok", "identifikátor"),
+        _stlpec(f, "geo", "Kód hostiteľskej krajiny", "kód", "identifikátor"),
+        _stlpec(f, "krajina", "Názov hostiteľskej krajiny", "text", "identifikátor"),
+        _stlpec(f, "definicia", "Definícia použitá pre krajinu v celom rade", "text", "klasifikácia",
+                "", "rovnaká ako v diaspora_odhad.csv (zvolená podľa najnovších dát)"),
+        _stlpec(f, "osoby_20_64", "Počet osôb 20–64 použitý (alebo nepoužitý) v danom roku", "osoby",
+                "importované alebo vypočítané podľa stĺpca sposob",
+                f"{API_ZDROJ}: migr_pop3ctb / migr_pop1ctz", "pôvodná = súčet 9 vekových skupín; interpolovaná = lineárne "
+                "medzi susednými rokmi; doplnená = najbližšia známa hodnota"),
+        _stlpec(f, "v_paneli", "Či krajina patrí do panela časového radu", "True / False", "klasifikácia",
+                "", f"True, ak má krajina dáta aspoň v {PANEL_MIN_PODIEL_ROKOV:.0%} rokov"),
+        _stlpec(f, "sposob", "Pôvod hodnoty v danom roku", "text", "klasifikácia", "",
+                "pôvodná / interpolovaná / doplnená najbližšou hodnotou / chýba (rok vynechaný) / mimo panela (nezapočítané)",
+                "Súčet riadkov s v_paneli = True za rok = emigranti_panel_20_64 v casovy_rad.csv."),
     ]
     return D
 
@@ -690,9 +747,10 @@ def zapis_csv(df: pd.DataFrame, nazov: str) -> None:
 # Generovanie stránky s metodikou (docs/index.html) zo šablóny
 # ---------------------------------------------------------------------------
 
-VERZIA = "2.4"
+VERZIA = "2.6"
 SABLONA = Path(__file__).resolve().parent.parent / "docs" / "sablona.html"
 AKTUALIZOVAT_DOCS = True     # True = prepíše aj docs/index.html (pre GitHub Pages)
+MODELOVY_ROK = 2019          # rok modelového príkladu; ak v rade nie je, použije sa najnovší rok bez doplnených krajín
 
 NAZVY_KRAJIN = {
     "AT": "Rakúsko", "BE": "Belgicko", "BG": "Bulharsko", "CY": "Cyprus", "CZ": "Česko",
@@ -876,7 +934,83 @@ def hodnoty_stranky(odhad, sc, cas, ref, panel) -> dict:
         t += (f" <strong>Pokles v roku {int(c.rok[j])}</strong> ({_cislo(pokles[j], 1).replace('-', '−')} %) môže byť revízia dát "
               "hostiteľských krajín, napríklad po sčítaní obyvateľov.")
     h["CITANIE_05"] = t
+    h.update(modelovy_priklad(c, ref, len(panel)))
     return h
+
+
+def modelovy_priklad(c: pd.DataFrame, ref: pd.DataFrame, n_panel: int) -> dict:
+    """Jeden riadok časového radu rozpísaný krok za krokom (sekcia 5 stránky)."""
+    roky_ok = [int(r) for r in c.rok if int(r) in ref.index]
+    if MODELOVY_ROK in roky_ok:
+        rok = MODELOVY_ROK
+    else:   # najnovší rok bez doplnených krajín, inak posledný rok
+        bez = [int(r.rok) for _, r in c.iterrows() if r.doplnene_krajiny == 0 and int(r.rok) in ref.index]
+        rok = max(bez) if bez else max(roky_ok)
+    r = c[c.rok == rok].iloc[0]
+    x = ref.loc[rok]
+    sc, s = SCENARE[HLAVNY_SCENAR], SADZBY[HLAVNA_SADZBA]
+    N, L, z = float(r.emigranti_panel_20_64), float(x.populacia_20_64), float(x.zamestnanost_20_64)
+    w, V = float(x.priemerna_mzda_rok_eur), float(x.vydavky_starobne_mil)
+    a, b = sc["zamestnanost_rel"], sc["mzda_podiel"]
+    P, D = N * z * a, L * z
+    # efektívny γ zo skutočného výsledku (v paneli je bez UK zvyčajne 1,00)
+    g = float(r.usle_odvody_mil_eur) * 1e6 / (P * w * b * s) if P else 1.0
+    O = P * w * b * g * s / 1e6
+
+    def riadok(sym, vyzn, hod, druh, zdroj):
+        return (f'      <tr><td><span class="sym">{sym}</span></td><td>{vyzn}</td><td class="n">{hod}</td>'
+                f'<td>{druh}</td><td>{zdroj}</td></tr>')
+    pill = lambda t, k: f'<span class="pill {k}">{t}</span>'
+    imp, vyp, par = pill("importované", "ok"), pill("vypočítané", "mid"), pill("parameter", "no")
+    dopl = int(r.doplnene_krajiny)
+    pdo = getattr(r, "podiel_doplnenych_osob_pct", None)
+    n_pozn = ("všetky hodnoty pôvodné" if dopl == 0 else
+              f"{dopl} krajín doplnených" + (f", {_pct(pdo)} osôb" if pdo is not None and pd.notna(pdo) else ""))
+    P_ = "\n".join([
+        riadok("N", f"Slováci 20–64 v paneli {n_panel} krajín", _cislo(N),
+               imp if dopl == 0 else vyp, f"migr_pop3ctb / migr_pop1ctz, súčet krajín panela ({n_pozn})"),
+        riadok("L", "populácia SR 20–64", _cislo(L), vyp, "demo_pjan, súčet rokov veku 20–64"),
+        riadok("z", "miera zamestnanosti občanov SR 20–64", _cislo(z, 3), imp, "lfsa_ergan (÷ 100)"),
+        riadok("α", "podiel zamestnanosti, ktorý by emigranti doma dosiahli", _cislo(a, 2), par,
+               f"scenár {NAZVY_SCENAROV.get(HLAVNY_SCENAR, HLAVNY_SCENAR)}"),
+        riadok("w", "priemerná ročná mzda na plný úväzok", f"{_cislo(w)} €", imp, "nama_10_fte"),
+        riadok("β", "podiel emigranta na priemernej mzde", _cislo(b, 2), par,
+               f"scenár {NAZVY_SCENAROV.get(HLAVNY_SCENAR, HLAVNY_SCENAR)}"),
+        riadok("γ", "mzdový koeficient krajiny", _cislo(g, 2), par, "1,00 pre krajiny panela (UK v paneli nie je)"
+               if abs(g - 1) < 0.005 else "vážený priemer koeficientov krajín panela"),
+        riadok("s", "sadzba poistného", _pct(s * 100, 0 if (s * 100).is_integer() else 2), par, "zákon č. 461/2003 Z. z."),
+        riadok("V", "výdavky na starobné dôchodky", f"{_cislo(V, 2)} mil. €", vyp, "spr_exp_pens, OLD + AOLD"),
+    ])
+
+    def krok(lbl, vzorec, dosadene, vysledok):
+        return (f'    <div class="ex-step"><span class="lbl">{lbl}</span><span class="f">{vzorec}</span>'
+                f'<span class="f">{dosadene}</span><span class="r">{vysledok}</span></div>')
+    sy = lambda t: f'<span class="sym">{t}</span>'
+    K = "\n".join([
+        krok("1 · Koľko by ich pracovalo v SR", f"{sy('N')} × {sy('z')} × {sy('α')}",
+             f"{_cislo(N)} × {_cislo(z, 3)} × {_cislo(a, 2)}", f"{_cislo(P)} osôb"),
+        krok("2 · Koľko ľudí pracuje doma", f"{sy('L')} × {sy('z')}",
+             f"{_cislo(L)} × {_cislo(z, 3)}", f"{_cislo(D)} osôb"),
+        krok("3 · Podiel chýbajúcich pracujúcich", "krok 1 ÷ krok 2",
+             f"{_cislo(P)} ÷ {_cislo(D)}", _pct(100 * P / D, 2)),
+        krok("4 · Ušlé poistné za rok", f"krok 1 × {sy('w')} × {sy('β')} × {sy('γ')} × {sy('s')}",
+             f"{_cislo(P)} × {_cislo(w)} € × {_cislo(b, 2)} × {_cislo(g, 2)} × {_cislo(s, 2)}", f"{_cislo(O, 2)} mil. €"),
+        krok("5 · Podiel na výdavkoch na starobné dôchodky", f"krok 4 ÷ {sy('V')}",
+             f"{_cislo(O, 2)} ÷ {_cislo(V, 2)}", _pct(100 * O / V, 2)),
+    ])
+    zhoda = (abs(100 * P / D - r.pct_domacich_pracujucich) < 0.005 and abs(O - r.usle_odvody_mil_eur) < 0.005
+             and abs(100 * O / V - r.pct_vydavkov_starobne) < 0.005)
+    if not zhoda:
+        print(f"   ! modelový príklad {rok}: ručný prepočet sa nezhoduje s casovy_rad.csv")
+    uvod = (f"Jeden bod grafu z časti 4 rozpísaný do posledného čísla. Rok {rok} "
+            + ("je vybraný preto, že všetky počty emigrantov v ňom sú skutočne nahlásené údaje, bez dopĺňania."
+               if dopl == 0 else f"obsahuje {dopl} krajín s doplnenou hodnotou, preto ho ber ako ilustráciu.")
+            + f" Použitý je {NAZVY_SCENAROV.get(HLAVNY_SCENAR, HLAVNY_SCENAR)} scenár a sadzba "
+            f"{_pct(s * 100, 0 if (s * 100).is_integer() else 2)}.")
+    kontrola = (f"Kontrola: výsledky krokov 3, 4 a 5 sa zhodujú s riadkom {rok} v súbore <code>casovy_rad.csv</code>."
+                if zhoda else f"Pozor: ručný prepočet sa nezhoduje s riadkom {rok} v <code>casovy_rad.csv</code>.")
+    return {"MODELOVY_ROK": str(rok), "MODELOVY_UVOD": uvod, "MODELOVY_PARAMETRE": P_,
+            "MODELOVY_KROKY": K, "MODELOVY_KONTROLA": kontrola}
 
 
 def generuj_stranku(odhad, sc, cas, ref, panel, ciele=None) -> None:
@@ -918,6 +1052,8 @@ def main():
         "vekova_struktura.csv": vek.reset_index(),
         "scenare.csv": sc,
         "casovy_rad.csv": cas,
+        "casovy_rad_krajiny.csv": CASOVY_RAD_KRAJINY.get("df", pd.DataFrame(
+            columns=["rok", "geo", "krajina", "definicia", "osoby_20_64", "v_paneli", "sposob"])),
     }
     for nazov, df in vystupy.items():
         zapis_csv(df, nazov)

@@ -1,0 +1,329 @@
+﻿rok,geo,krajina,definicia,osoby_20_64,v_paneli,sposob
+2010,AT,Rakúsko,narodeni_v_SR,19786,True,pôvodná
+2010,BE,Belgicko,obcania_SR,2761,True,pôvodná
+2010,CZ,Česko,obcania_SR,66109,True,pôvodná
+2010,DE,Nemecko,obcania_SR,23185,True,pôvodná
+2010,DK,Dánsko,narodeni_v_SR,765,True,pôvodná
+2010,FI,Fínsko,narodeni_v_SR,87,True,pôvodná
+2010,HU,Maďarsko,narodeni_v_SR,7013,True,doplnená najbližšou hodnotou
+2010,IE,Írsko,obcania_SR,10017,False,mimo panela (nezapočítané)
+2010,IS,Island,narodeni_v_SR,156,True,doplnená najbližšou hodnotou
+2010,IT,Taliansko,narodeni_v_SR,7516,True,pôvodná
+2010,LI,Lichtenštajnsko,narodeni_v_SR,24,True,pôvodná
+2010,LV,Lotyšsko,narodeni_v_SR,14,True,doplnená najbližšou hodnotou
+2010,NL,Holandsko,narodeni_v_SR,2,True,pôvodná
+2010,NO,Nórsko,narodeni_v_SR,1866,True,pôvodná
+2010,PT,Portugalsko,obcania_SR,185,True,pôvodná
+2010,RO,Rumunsko,narodeni_v_SR,11,True,doplnená najbližšou hodnotou
+2010,SE,Švédsko,narodeni_v_SR,854,True,pôvodná
+2010,SI,Slovinsko,narodeni_v_SR,369,True,pôvodná
+2011,AT,Rakúsko,narodeni_v_SR,20802,True,interpolovaná
+2011,BE,Belgicko,obcania_SR,3462,True,pôvodná
+2011,BG,Bulharsko,narodeni_v_SR,228,False,mimo panela (nezapočítané)
+2011,CH,Švajčiarsko,narodeni_v_SR,6508,False,mimo panela (nezapočítané)
+2011,CZ,Česko,obcania_SR,63867,True,pôvodná
+2011,DE,Nemecko,obcania_SR,24298,True,interpolovaná
+2011,DK,Dánsko,narodeni_v_SR,828,True,pôvodná
+2011,FI,Fínsko,narodeni_v_SR,96,True,pôvodná
+2011,HU,Maďarsko,narodeni_v_SR,7013,True,doplnená najbližšou hodnotou
+2011,IE,Írsko,obcania_SR,9708,False,mimo panela (nezapočítané)
+2011,IS,Island,narodeni_v_SR,156,True,doplnená najbližšou hodnotou
+2011,IT,Taliansko,narodeni_v_SR,7981,True,pôvodná
+2011,LI,Lichtenštajnsko,narodeni_v_SR,22,True,pôvodná
+2011,LV,Lotyšsko,narodeni_v_SR,14,True,doplnená najbližšou hodnotou
+2011,NL,Holandsko,narodeni_v_SR,2,True,interpolovaná
+2011,NO,Nórsko,narodeni_v_SR,2154,True,pôvodná
+2011,PT,Portugalsko,obcania_SR,196,True,pôvodná
+2011,RO,Rumunsko,narodeni_v_SR,11,True,doplnená najbližšou hodnotou
+2011,SE,Švédsko,narodeni_v_SR,977,True,pôvodná
+2011,SI,Slovinsko,narodeni_v_SR,477,True,pôvodná
+2012,AT,Rakúsko,narodeni_v_SR,21819,True,pôvodná
+2012,BE,Belgicko,obcania_SR,3489,True,pôvodná
+2012,BG,Bulharsko,narodeni_v_SR,223,False,mimo panela (nezapočítané)
+2012,CH,Švajčiarsko,narodeni_v_SR,9356,False,mimo panela (nezapočítané)
+2012,CZ,Česko,obcania_SR,72764,True,pôvodná
+2012,DE,Nemecko,obcania_SR,25412,True,pôvodná
+2012,DK,Dánsko,narodeni_v_SR,944,True,pôvodná
+2012,FI,Fínsko,narodeni_v_SR,109,True,pôvodná
+2012,HU,Maďarsko,narodeni_v_SR,7013,True,pôvodná
+2012,IS,Island,narodeni_v_SR,156,True,pôvodná
+2012,IT,Taliansko,narodeni_v_SR,8475,True,pôvodná
+2012,LI,Lichtenštajnsko,narodeni_v_SR,23,True,pôvodná
+2012,LV,Lotyšsko,narodeni_v_SR,14,True,pôvodná
+2012,NL,Holandsko,narodeni_v_SR,2,True,interpolovaná
+2012,NO,Nórsko,narodeni_v_SR,2555,True,pôvodná
+2012,PT,Portugalsko,obcania_SR,189,True,pôvodná
+2012,RO,Rumunsko,narodeni_v_SR,11,True,doplnená najbližšou hodnotou
+2012,SE,Švédsko,narodeni_v_SR,1018,True,pôvodná
+2012,SI,Slovinsko,narodeni_v_SR,453,True,pôvodná
+2013,AT,Rakúsko,narodeni_v_SR,23675,True,pôvodná
+2013,BE,Belgicko,obcania_SR,3590,True,pôvodná
+2013,CH,Švajčiarsko,narodeni_v_SR,10313,False,mimo panela (nezapočítané)
+2013,CZ,Česko,obcania_SR,76607,True,pôvodná
+2013,DE,Nemecko,obcania_SR,29886,True,pôvodná
+2013,DK,Dánsko,narodeni_v_SR,1099,True,pôvodná
+2013,FI,Fínsko,narodeni_v_SR,125,True,pôvodná
+2013,HU,Maďarsko,narodeni_v_SR,7427,True,pôvodná
+2013,IS,Island,narodeni_v_SR,160,True,pôvodná
+2013,IT,Taliansko,narodeni_v_SR,8644,True,pôvodná
+2013,LI,Lichtenštajnsko,narodeni_v_SR,29,True,pôvodná
+2013,LT,Litva,narodeni_v_SR,14,False,mimo panela (nezapočítané)
+2013,LV,Lotyšsko,narodeni_v_SR,16,True,pôvodná
+2013,NL,Holandsko,narodeni_v_SR,2,True,pôvodná
+2013,NO,Nórsko,narodeni_v_SR,2944,True,pôvodná
+2013,PT,Portugalsko,obcania_SR,163,True,pôvodná
+2013,RO,Rumunsko,narodeni_v_SR,11,True,pôvodná
+2013,SE,Švédsko,narodeni_v_SR,1058,True,pôvodná
+2013,SI,Slovinsko,narodeni_v_SR,453,True,pôvodná
+2014,AT,Rakúsko,narodeni_v_SR,25960,True,pôvodná
+2014,BE,Belgicko,obcania_SR,3676,True,pôvodná
+2014,CH,Švajčiarsko,narodeni_v_SR,11044,False,mimo panela (nezapočítané)
+2014,CZ,Česko,obcania_SR,80824,True,pôvodná
+2014,DE,Nemecko,obcania_SR,34031,True,pôvodná
+2014,DK,Dánsko,narodeni_v_SR,1310,True,pôvodná
+2014,EE,Estónsko,narodeni_v_SR,16,False,mimo panela (nezapočítané)
+2014,FI,Fínsko,narodeni_v_SR,135,True,pôvodná
+2014,HU,Maďarsko,narodeni_v_SR,7933,True,pôvodná
+2014,IS,Island,narodeni_v_SR,185,True,pôvodná
+2014,IT,Taliansko,narodeni_v_SR,8593,True,pôvodná
+2014,LI,Lichtenštajnsko,narodeni_v_SR,29,True,pôvodná
+2014,LT,Litva,narodeni_v_SR,22,False,mimo panela (nezapočítané)
+2014,LV,Lotyšsko,narodeni_v_SR,17,True,pôvodná
+2014,NL,Holandsko,narodeni_v_SR,83,True,pôvodná
+2014,NO,Nórsko,narodeni_v_SR,3210,True,pôvodná
+2014,PT,Portugalsko,obcania_SR,165,True,pôvodná
+2014,RO,Rumunsko,narodeni_v_SR,17,True,pôvodná
+2014,SE,Švédsko,narodeni_v_SR,1122,True,pôvodná
+2014,SI,Slovinsko,narodeni_v_SR,484,True,pôvodná
+2015,AT,Rakúsko,narodeni_v_SR,28354,True,pôvodná
+2015,BE,Belgicko,obcania_SR,3779,True,pôvodná
+2015,CH,Švajčiarsko,narodeni_v_SR,12952,False,mimo panela (nezapočítané)
+2015,CZ,Česko,obcania_SR,85025,True,pôvodná
+2015,DE,Nemecko,obcania_SR,37297,True,pôvodná
+2015,DK,Dánsko,narodeni_v_SR,1589,True,pôvodná
+2015,EE,Estónsko,narodeni_v_SR,13,False,mimo panela (nezapočítané)
+2015,FI,Fínsko,narodeni_v_SR,155,True,pôvodná
+2015,HU,Maďarsko,narodeni_v_SR,8330,True,pôvodná
+2015,IS,Island,narodeni_v_SR,232,True,pôvodná
+2015,IT,Taliansko,narodeni_v_SR,8613,True,pôvodná
+2015,LI,Lichtenštajnsko,narodeni_v_SR,32,True,pôvodná
+2015,LT,Litva,narodeni_v_SR,29,False,mimo panela (nezapočítané)
+2015,LV,Lotyšsko,narodeni_v_SR,17,True,pôvodná
+2015,NL,Holandsko,narodeni_v_SR,213,True,pôvodná
+2015,NO,Nórsko,narodeni_v_SR,3470,True,pôvodná
+2015,PT,Portugalsko,obcania_SR,150,True,pôvodná
+2015,RO,Rumunsko,narodeni_v_SR,10,True,pôvodná
+2015,SE,Švédsko,narodeni_v_SR,1226,True,pôvodná
+2015,SI,Slovinsko,narodeni_v_SR,509,True,pôvodná
+2016,AT,Rakúsko,narodeni_v_SR,30408,True,pôvodná
+2016,BE,Belgicko,obcania_SR,3901,True,pôvodná
+2016,CH,Švajčiarsko,narodeni_v_SR,14474,False,mimo panela (nezapočítané)
+2016,CZ,Česko,obcania_SR,89369,True,pôvodná
+2016,DE,Nemecko,obcania_SR,40554,True,pôvodná
+2016,DK,Dánsko,narodeni_v_SR,2010,True,pôvodná
+2016,EE,Estónsko,narodeni_v_SR,114,False,mimo panela (nezapočítané)
+2016,FI,Fínsko,narodeni_v_SR,186,True,pôvodná
+2016,HU,Maďarsko,narodeni_v_SR,8851,True,pôvodná
+2016,IS,Island,narodeni_v_SR,251,True,pôvodná
+2016,IT,Taliansko,narodeni_v_SR,8951,True,pôvodná
+2016,LI,Lichtenštajnsko,narodeni_v_SR,35,True,pôvodná
+2016,LT,Litva,narodeni_v_SR,35,False,mimo panela (nezapočítané)
+2016,LV,Lotyšsko,narodeni_v_SR,19,True,pôvodná
+2016,NL,Holandsko,narodeni_v_SR,296,True,pôvodná
+2016,NO,Nórsko,narodeni_v_SR,3613,True,pôvodná
+2016,PT,Portugalsko,obcania_SR,154,True,pôvodná
+2016,RO,Rumunsko,narodeni_v_SR,79,True,pôvodná
+2016,SE,Švédsko,narodeni_v_SR,1321,True,pôvodná
+2016,SI,Slovinsko,narodeni_v_SR,470,True,pôvodná
+2017,AT,Rakúsko,narodeni_v_SR,32125,True,pôvodná
+2017,BE,Belgicko,obcania_SR,3973,True,pôvodná
+2017,CH,Švajčiarsko,narodeni_v_SR,15658,False,mimo panela (nezapočítané)
+2017,CZ,Česko,obcania_SR,93600,True,pôvodná
+2017,DE,Nemecko,obcania_SR,41443,True,pôvodná
+2017,DK,Dánsko,narodeni_v_SR,2312,True,pôvodná
+2017,EE,Estónsko,narodeni_v_SR,131,False,mimo panela (nezapočítané)
+2017,FI,Fínsko,narodeni_v_SR,226,True,pôvodná
+2017,HU,Maďarsko,narodeni_v_SR,9239,True,pôvodná
+2017,IE,Írsko,obcania_SR,7470,False,mimo panela (nezapočítané)
+2017,IS,Island,narodeni_v_SR,335,True,pôvodná
+2017,IT,Taliansko,narodeni_v_SR,8971,True,pôvodná
+2017,LI,Lichtenštajnsko,narodeni_v_SR,34,True,pôvodná
+2017,LT,Litva,narodeni_v_SR,29,False,mimo panela (nezapočítané)
+2017,LU,Luxembursko,narodeni_v_SR,689,False,mimo panela (nezapočítané)
+2017,LV,Lotyšsko,narodeni_v_SR,19,True,pôvodná
+2017,NL,Holandsko,narodeni_v_SR,481,True,pôvodná
+2017,NO,Nórsko,narodeni_v_SR,3570,True,pôvodná
+2017,PT,Portugalsko,obcania_SR,186,True,pôvodná
+2017,RO,Rumunsko,narodeni_v_SR,197,True,pôvodná
+2017,SE,Švédsko,narodeni_v_SR,1407,True,pôvodná
+2017,SI,Slovinsko,narodeni_v_SR,456,True,pôvodná
+2018,AT,Rakúsko,narodeni_v_SR,33390,True,pôvodná
+2018,BE,Belgicko,obcania_SR,4079,True,pôvodná
+2018,CH,Švajčiarsko,narodeni_v_SR,16428,False,mimo panela (nezapočítané)
+2018,CZ,Česko,obcania_SR,96759,True,pôvodná
+2018,DE,Nemecko,obcania_SR,43056,True,pôvodná
+2018,DK,Dánsko,narodeni_v_SR,2560,True,pôvodná
+2018,EE,Estónsko,narodeni_v_SR,168,False,mimo panela (nezapočítané)
+2018,FI,Fínsko,narodeni_v_SR,254,True,pôvodná
+2018,HU,Maďarsko,narodeni_v_SR,9530,True,pôvodná
+2018,IE,Írsko,obcania_SR,7505,False,mimo panela (nezapočítané)
+2018,IS,Island,narodeni_v_SR,427,True,pôvodná
+2018,IT,Taliansko,narodeni_v_SR,8947,True,pôvodná
+2018,LI,Lichtenštajnsko,narodeni_v_SR,35,True,pôvodná
+2018,LT,Litva,narodeni_v_SR,31,False,mimo panela (nezapočítané)
+2018,LU,Luxembursko,narodeni_v_SR,716,False,mimo panela (nezapočítané)
+2018,LV,Lotyšsko,narodeni_v_SR,24,True,pôvodná
+2018,NL,Holandsko,narodeni_v_SR,759,True,pôvodná
+2018,NO,Nórsko,narodeni_v_SR,3483,True,pôvodná
+2018,PT,Portugalsko,obcania_SR,223,True,pôvodná
+2018,RO,Rumunsko,narodeni_v_SR,290,True,pôvodná
+2018,SE,Švédsko,narodeni_v_SR,1500,True,pôvodná
+2018,SI,Slovinsko,narodeni_v_SR,447,True,pôvodná
+2019,AT,Rakúsko,narodeni_v_SR,34385,True,pôvodná
+2019,BE,Belgicko,obcania_SR,4150,True,pôvodná
+2019,CH,Švajčiarsko,narodeni_v_SR,17255,False,mimo panela (nezapočítané)
+2019,CZ,Česko,obcania_SR,100551,True,pôvodná
+2019,DE,Nemecko,obcania_SR,43714,True,pôvodná
+2019,DK,Dánsko,narodeni_v_SR,2631,True,pôvodná
+2019,EE,Estónsko,narodeni_v_SR,167,False,mimo panela (nezapočítané)
+2019,FI,Fínsko,narodeni_v_SR,276,True,pôvodná
+2019,HU,Maďarsko,narodeni_v_SR,9376,True,pôvodná
+2019,IE,Írsko,obcania_SR,7380,False,mimo panela (nezapočítané)
+2019,IS,Island,narodeni_v_SR,454,True,pôvodná
+2019,IT,Taliansko,narodeni_v_SR,301,True,pôvodná
+2019,LI,Lichtenštajnsko,narodeni_v_SR,41,True,pôvodná
+2019,LT,Litva,narodeni_v_SR,36,False,mimo panela (nezapočítané)
+2019,LU,Luxembursko,narodeni_v_SR,770,False,mimo panela (nezapočítané)
+2019,LV,Lotyšsko,narodeni_v_SR,30,True,pôvodná
+2019,NL,Holandsko,narodeni_v_SR,1079,True,pôvodná
+2019,NO,Nórsko,narodeni_v_SR,3402,True,pôvodná
+2019,PT,Portugalsko,obcania_SR,258,True,pôvodná
+2019,RO,Rumunsko,narodeni_v_SR,375,True,pôvodná
+2019,SE,Švédsko,narodeni_v_SR,1606,True,pôvodná
+2019,SI,Slovinsko,narodeni_v_SR,450,True,pôvodná
+2020,AT,Rakúsko,narodeni_v_SR,35313,True,pôvodná
+2020,BE,Belgicko,obcania_SR,4399,True,pôvodná
+2020,CH,Švajčiarsko,narodeni_v_SR,17992,False,mimo panela (nezapočítané)
+2020,CZ,Česko,obcania_SR,103570,True,pôvodná
+2020,DE,Nemecko,obcania_SR,43941,True,pôvodná
+2020,DK,Dánsko,narodeni_v_SR,2687,True,pôvodná
+2020,EE,Estónsko,narodeni_v_SR,126,False,mimo panela (nezapočítané)
+2020,FI,Fínsko,narodeni_v_SR,299,True,pôvodná
+2020,HU,Maďarsko,narodeni_v_SR,10030,True,pôvodná
+2020,IE,Írsko,obcania_SR,7380,False,mimo panela (nezapočítané)
+2020,IS,Island,narodeni_v_SR,490,True,pôvodná
+2020,IT,Taliansko,narodeni_v_SR,381,True,pôvodná
+2020,LI,Lichtenštajnsko,narodeni_v_SR,45,True,pôvodná
+2020,LT,Litva,narodeni_v_SR,31,False,mimo panela (nezapočítané)
+2020,LU,Luxembursko,narodeni_v_SR,782,False,mimo panela (nezapočítané)
+2020,LV,Lotyšsko,narodeni_v_SR,29,True,pôvodná
+2020,NL,Holandsko,narodeni_v_SR,1424,True,pôvodná
+2020,NO,Nórsko,narodeni_v_SR,3446,True,pôvodná
+2020,PT,Portugalsko,obcania_SR,287,True,pôvodná
+2020,RO,Rumunsko,narodeni_v_SR,429,True,pôvodná
+2020,SE,Švédsko,narodeni_v_SR,1716,True,pôvodná
+2020,SI,Slovinsko,narodeni_v_SR,458,True,pôvodná
+2021,AT,Rakúsko,narodeni_v_SR,36243,True,pôvodná
+2021,BE,Belgicko,obcania_SR,4474,True,pôvodná
+2021,CH,Švajčiarsko,narodeni_v_SR,18652,False,mimo panela (nezapočítané)
+2021,CZ,Česko,obcania_SR,81307,True,pôvodná
+2021,DE,Nemecko,obcania_SR,43605,True,pôvodná
+2021,DK,Dánsko,narodeni_v_SR,2795,True,pôvodná
+2021,FI,Fínsko,narodeni_v_SR,327,True,pôvodná
+2021,HU,Maďarsko,narodeni_v_SR,10364,True,pôvodná
+2021,IE,Írsko,obcania_SR,7137,False,mimo panela (nezapočítané)
+2021,IS,Island,narodeni_v_SR,441,True,pôvodná
+2021,IT,Taliansko,narodeni_v_SR,650,True,pôvodná
+2021,LI,Lichtenštajnsko,narodeni_v_SR,45,True,pôvodná
+2021,LT,Litva,narodeni_v_SR,13,False,mimo panela (nezapočítané)
+2021,LU,Luxembursko,narodeni_v_SR,795,False,mimo panela (nezapočítané)
+2021,LV,Lotyšsko,narodeni_v_SR,26,True,pôvodná
+2021,NL,Holandsko,narodeni_v_SR,6650,True,pôvodná
+2021,NO,Nórsko,narodeni_v_SR,3430,True,pôvodná
+2021,PT,Portugalsko,obcania_SR,298,True,pôvodná
+2021,RO,Rumunsko,narodeni_v_SR,394,True,pôvodná
+2021,SE,Švédsko,narodeni_v_SR,1825,True,pôvodná
+2021,SI,Slovinsko,narodeni_v_SR,468,True,pôvodná
+2022,AT,Rakúsko,narodeni_v_SR,36878,True,pôvodná
+2022,BE,Belgicko,obcania_SR,4687,True,pôvodná
+2022,CZ,Česko,obcania_SR,84960,True,pôvodná
+2022,DE,Nemecko,obcania_SR,44519,True,pôvodná
+2022,DK,Dánsko,narodeni_v_SR,3051,True,pôvodná
+2022,FI,Fínsko,narodeni_v_SR,375,True,pôvodná
+2022,HU,Maďarsko,narodeni_v_SR,10713,True,pôvodná
+2022,IE,Írsko,obcania_SR,7240,False,mimo panela (nezapočítané)
+2022,IS,Island,narodeni_v_SR,487,True,pôvodná
+2022,IT,Taliansko,narodeni_v_SR,543,True,pôvodná
+2022,LI,Lichtenštajnsko,narodeni_v_SR,48,True,pôvodná
+2022,LT,Litva,narodeni_v_SR,16,False,mimo panela (nezapočítané)
+2022,LU,Luxembursko,narodeni_v_SR,814,False,mimo panela (nezapočítané)
+2022,LV,Lotyšsko,narodeni_v_SR,29,True,pôvodná
+2022,NL,Holandsko,narodeni_v_SR,7334,True,pôvodná
+2022,NO,Nórsko,narodeni_v_SR,3449,True,pôvodná
+2022,PT,Portugalsko,obcania_SR,361,True,pôvodná
+2022,RO,Rumunsko,narodeni_v_SR,404,True,pôvodná
+2022,SE,Švédsko,narodeni_v_SR,1953,True,interpolovaná
+2022,SI,Slovinsko,narodeni_v_SR,476,True,pôvodná
+2023,AT,Rakúsko,narodeni_v_SR,37893,True,pôvodná
+2023,BE,Belgicko,obcania_SR,4831,True,pôvodná
+2023,BG,Bulharsko,narodeni_v_SR,262,False,mimo panela (nezapočítané)
+2023,CZ,Česko,obcania_SR,86855,True,pôvodná
+2023,DE,Nemecko,obcania_SR,43070,True,pôvodná
+2023,DK,Dánsko,narodeni_v_SR,3051,True,doplnená najbližšou hodnotou
+2023,EE,Estónsko,narodeni_v_SR,126,False,mimo panela (nezapočítané)
+2023,FI,Fínsko,narodeni_v_SR,415,True,pôvodná
+2023,HU,Maďarsko,narodeni_v_SR,11182,True,pôvodná
+2023,IE,Írsko,obcania_SR,7344,False,mimo panela (nezapočítané)
+2023,IS,Island,narodeni_v_SR,582,True,pôvodná
+2023,IT,Taliansko,narodeni_v_SR,651,True,pôvodná
+2023,LI,Lichtenštajnsko,narodeni_v_SR,48,True,doplnená najbližšou hodnotou
+2023,LU,Luxembursko,narodeni_v_SR,824,False,mimo panela (nezapočítané)
+2023,LV,Lotyšsko,narodeni_v_SR,19,True,pôvodná
+2023,NL,Holandsko,narodeni_v_SR,7982,True,pôvodná
+2023,NO,Nórsko,narodeni_v_SR,3532,True,pôvodná
+2023,PT,Portugalsko,obcania_SR,437,True,pôvodná
+2023,RO,Rumunsko,narodeni_v_SR,372,True,pôvodná
+2023,SE,Švédsko,narodeni_v_SR,2081,True,pôvodná
+2023,SI,Slovinsko,narodeni_v_SR,475,True,pôvodná
+2024,AT,Rakúsko,narodeni_v_SR,38658,True,pôvodná
+2024,BE,Belgicko,obcania_SR,5013,True,pôvodná
+2024,BG,Bulharsko,narodeni_v_SR,319,False,mimo panela (nezapočítané)
+2024,CZ,Česko,obcania_SR,90405,True,pôvodná
+2024,DE,Nemecko,obcania_SR,43100,True,pôvodná
+2024,DK,Dánsko,narodeni_v_SR,3051,True,doplnená najbližšou hodnotou
+2024,EE,Estónsko,narodeni_v_SR,121,False,mimo panela (nezapočítané)
+2024,FI,Fínsko,narodeni_v_SR,451,True,pôvodná
+2024,HU,Maďarsko,narodeni_v_SR,11437,True,pôvodná
+2024,IE,Írsko,obcania_SR,7456,False,mimo panela (nezapočítané)
+2024,IS,Island,narodeni_v_SR,531,True,pôvodná
+2024,IT,Taliansko,narodeni_v_SR,9500,True,pôvodná
+2024,LI,Lichtenštajnsko,narodeni_v_SR,48,True,doplnená najbližšou hodnotou
+2024,LU,Luxembursko,narodeni_v_SR,849,False,mimo panela (nezapočítané)
+2024,LV,Lotyšsko,narodeni_v_SR,18,True,pôvodná
+2024,NL,Holandsko,narodeni_v_SR,8601,True,pôvodná
+2024,NO,Nórsko,narodeni_v_SR,3615,True,pôvodná
+2024,PT,Portugalsko,obcania_SR,497,True,pôvodná
+2024,RO,Rumunsko,narodeni_v_SR,393,True,pôvodná
+2024,SE,Švédsko,narodeni_v_SR,2031,True,pôvodná
+2024,SI,Slovinsko,narodeni_v_SR,493,True,pôvodná
+2025,AT,Rakúsko,narodeni_v_SR,38945,True,pôvodná
+2025,BE,Belgicko,obcania_SR,5107,True,pôvodná
+2025,BG,Bulharsko,narodeni_v_SR,371,False,mimo panela (nezapočítané)
+2025,CZ,Česko,obcania_SR,93303,True,pôvodná
+2025,DE,Nemecko,obcania_SR,42406,True,pôvodná
+2025,DK,Dánsko,narodeni_v_SR,3051,True,doplnená najbližšou hodnotou
+2025,EE,Estónsko,narodeni_v_SR,125,False,mimo panela (nezapočítané)
+2025,FI,Fínsko,narodeni_v_SR,458,True,pôvodná
+2025,HU,Maďarsko,narodeni_v_SR,11799,True,pôvodná
+2025,IE,Írsko,obcania_SR,7340,False,mimo panela (nezapočítané)
+2025,IS,Island,narodeni_v_SR,553,True,pôvodná
+2025,IT,Taliansko,narodeni_v_SR,9631,True,pôvodná
+2025,LI,Lichtenštajnsko,narodeni_v_SR,48,True,doplnená najbližšou hodnotou
+2025,LU,Luxembursko,narodeni_v_SR,877,False,mimo panela (nezapočítané)
+2025,LV,Lotyšsko,narodeni_v_SR,17,True,pôvodná
+2025,NL,Holandsko,narodeni_v_SR,9021,True,pôvodná
+2025,NO,Nórsko,narodeni_v_SR,3690,True,pôvodná
+2025,PT,Portugalsko,obcania_SR,497,True,doplnená najbližšou hodnotou
+2025,RO,Rumunsko,narodeni_v_SR,394,True,pôvodná
+2025,SE,Švédsko,narodeni_v_SR,2109,True,pôvodná
+2025,SI,Slovinsko,narodeni_v_SR,496,True,pôvodná

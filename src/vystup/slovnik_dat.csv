@@ -44,6 +44,14 @@ scenare.csv,pct_vydavkov_starobne,Ušlé poistné ako % výdavkov na starobné d
 casovy_rad.csv,rok,Kalendárny rok,rok,identifikátor,,,"Len roky, pre ktoré sú k dispozícii aj všetky slovenské referenčné dáta."
 casovy_rad.csv,emigranti_panel_20_64,Počet emigrantov 20–64 v paneli krajín,osoby,vypočítané z importovaných,Eurostat API: migr_pop3ctb / migr_pop1ctz podľa zvolenej definície krajiny,"súčet krajín s dátami aspoň v 70% rokov; chýbajúce vnútorné roky lineárne interpolované, okrajové doplnené najbližšou hodnotou (najviac 3 roky)","Bez UK a krajín s krátkym radom, preto nižšie ako v scenare.csv. Sleduje sa trend."
 casovy_rad.csv,doplnene_krajiny,"Počet krajín, ktorých hodnota bola v danom roku doplnená",počet,vypočítané,,počet krajín bez pôvodného údaja v danom roku,0 = všetky hodnoty sú pôvodné. Vyššie číslo = menej presný rok.
+casovy_rad.csv,podiel_doplnenych_osob_pct,"Podiel osôb v paneli, ktorých počet je v danom roku doplnený",%,vypočítané,,Σ doplnených hodnôt (interpolovaných alebo najbližšou hodnotou) ÷ emigranti_panel_20_64 × 100,"Lepšie meradlo presnosti roka ako počet krajín: ukazuje, akú váhu majú doplnené krajiny. Rozpis je v casovy_rad_krajiny.csv."
 casovy_rad.csv,pct_domacich_pracujucich,Chýbajúci pracujúci ako % pracujúcich v SR,%,vypočítané,,Σ N(t) × z(t) × α ÷ (populacia_20_64(t) × z(t)) × 100,Scenár realisticky (α = 0.83). Všetky veličiny z daného roku t.
 casovy_rad.csv,usle_odvody_mil_eur,Ušlé poistné v danom roku,mil. EUR za rok,vypočítané,,Σ N(t) × z(t) × α × w(t) × β × γ × s ÷ 1 000 000,"Scenár realisticky, sadzba 18%_starobne. Nominálne eurá daného roku."
 casovy_rad.csv,pct_vydavkov_starobne,Ušlé poistné ako % výdavkov na starobné dôchodky v danom roku,%,vypočítané,,usle_odvody_mil_eur(t) ÷ vydavky_starobne_mil(t) × 100,Citlivé na načasovanie valorizácie dôchodkov (napr. roky 2022–2023).
+casovy_rad_krajiny.csv,rok,Kalendárny rok,rok,identifikátor,,,
+casovy_rad_krajiny.csv,geo,Kód hostiteľskej krajiny,kód,identifikátor,,,
+casovy_rad_krajiny.csv,krajina,Názov hostiteľskej krajiny,text,identifikátor,,,
+casovy_rad_krajiny.csv,definicia,Definícia použitá pre krajinu v celom rade,text,klasifikácia,,rovnaká ako v diaspora_odhad.csv (zvolená podľa najnovších dát),
+casovy_rad_krajiny.csv,osoby_20_64,Počet osôb 20–64 použitý (alebo nepoužitý) v danom roku,osoby,importované alebo vypočítané podľa stĺpca sposob,Eurostat API: migr_pop3ctb / migr_pop1ctz,pôvodná = súčet 9 vekových skupín; interpolovaná = lineárne medzi susednými rokmi; doplnená = najbližšia známa hodnota,
+casovy_rad_krajiny.csv,v_paneli,Či krajina patrí do panela časového radu,True / False,klasifikácia,,"True, ak má krajina dáta aspoň v 70% rokov",
+casovy_rad_krajiny.csv,sposob,Pôvod hodnoty v danom roku,text,klasifikácia,,pôvodná / interpolovaná / doplnená najbližšou hodnotou / chýba (rok vynechaný) / mimo panela (nezapočítané),Súčet riadkov s v_paneli = True za rok = emigranti_panel_20_64 v casovy_rad.csv.
