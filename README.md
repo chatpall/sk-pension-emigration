@@ -1,6 +1,6 @@
-# Emigrácia a udržateľnosť dôchodkového systému SR
+# Model emigrácie a odhad je vplyvu na dôchodkový systém
 
-Odhad, koľko poistného chýba slovenskému priebežnému dôchodkovému systému (1. pilier) preto, že časť ľudí v produktívnom veku žije a pracuje v iných krajinách Európy.
+Odhad, koľko poistného chýba priebežnému dôchodkovému systému (1. pilier) preto, že časť ľudí v produktívnom veku žije a pracuje v iných krajinách Európy.
 
 **[Metodika s interaktívnym grafom](https://chatpall.github.io/sk-pension-emigration/)** (zdrojový súbor: [`docs/index.html`](docs/index.html))
 
